@@ -1,15 +1,9 @@
 
 echo "🚀 Running pre-commit checks..."
 
-# Format staged files
-echo "🎨 Formatting staged files..."
-git diff --cached --name-only --diff-filter=ACMR \
-  | grep -E '\.(js|jsx|ts|tsx|json|md|css|scss|html)$' \
-  | xargs -r pnpm exec prettier --write
-
 # Run lint-staged (eslint + prettier on staged files)
 echo "Running lint-staged..."
-pnpm dlx lint-staged
+pnpm exec lint-staged
 
 # Type checking
 echo "Running TypeScript type check..."
