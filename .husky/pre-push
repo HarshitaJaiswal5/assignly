@@ -1,5 +1,3 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
 
 echo "🚀 Running pre-push validation..."
 
@@ -30,5 +28,4 @@ fi
 # Security audit
 echo "🔒 Security audit..."
 pnpm audit --audit-level critical
-
 echo "✅ Pre-push validation completed!"
