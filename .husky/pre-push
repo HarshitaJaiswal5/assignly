@@ -1,0 +1,34 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🚀 Running pre-push validation..."
+
+# Lint full codebase
+echo "🔍 Linting codebase..."
+pnpm run lint
+
+# Type checking
+echo "🔧 Type checking..."
+pnpm run check-types
+
+# Build validation
+echo "🏗️ Building project..."
+pnpm run build
+
+# Run tests if available
+if [ -f "package.json" ] && grep -q '"test"' package.json; then
+  echo "🧪 Running tests..."
+  pnpm run test
+fi
+
+# Check for TODO/FIXME comments
+echo "🔍 Checking for TODO/FIXME..."
+if git diff --cached --name-only | xargs grep -l "TODO\|FIXME" 2>/dev/null; then
+  echo "⚠️ Warning: Found TODO/FIXME comments in staged files"
+fi
+
+# Security audit
+echo "🔒 Security audit..."
+pnpm audit --audit-level critical
+
+echo "✅ Pre-push validation completed!"

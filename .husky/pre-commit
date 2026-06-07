@@ -1,0 +1,24 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🚀 Running pre-commit checks..."
+
+# Format staged files
+echo "🎨 Formatting staged files..."
+git diff --cached --name-only --diff-filter=ACMR \
+  | grep -E '\.(js|jsx|ts|tsx|json|md|css|scss|html)$' \
+  | xargs -r pnpm exec prettier --write
+
+# Run lint-staged (eslint + prettier on staged files)
+echo "Running lint-staged..."
+pnpm dlx lint-staged
+
+# Type checking
+echo "Running TypeScript type check..."
+pnpm run check-types
+
+# Security audit (critical issues only)
+echo "Running security audit..."
+pnpm audit --audit-level critical
+
+echo "Pre-commit checks completed!"
