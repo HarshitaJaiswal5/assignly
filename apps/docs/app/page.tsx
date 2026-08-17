@@ -1,10 +1,17 @@
-import { Button } from '@repo/ui/button';
+'use client';
+
+import { useState } from 'react';
+import LoaderMain from './components/Loader/LoaderMain'; // enhance - do @component thing
+import HeroPage from './components/HeroPage/HeroPage';
 
 export default function Home() {
+  const [loading, setLoading] = useState(true);
+
   return (
-    <div>
-      <Button />
-      Hello world from app docs
-    </div>
+    <>
+      <HeroPage />
+
+      {loading && <LoaderMain onComplete={() => setLoading(false)} />}
+    </>
   );
 }
