@@ -1,9 +1,3 @@
-
-
 export default function Home() {
-  return (
-    <div>
-      Hello World from app WEB
-    </div>
-  );
+  return <div className='bg-pink'>Hello World from app WEB</div>;
 }

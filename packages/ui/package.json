@@ -10,7 +10,8 @@
   "exports": {
     "./globals.css": "./src/styles/globals.css",
     "./components/*": "./src/components/*",
-    "./lib/*": "./src/lib/*"
+    "./lib/*": "./src/lib/*",
+    "./postcss.config.mjs": "./postcss.config.mjs"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",
