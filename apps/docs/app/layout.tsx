@@ -2,9 +2,12 @@ import React from 'react';
 import type { Metadata } from 'next';
 
 // eslint-disable-next-line camelcase
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Geist, Geist_Mono, Rethink_Sans } from 'next/font/google';
 
 import '@repo/ui/globals.css';
+
+import Navbar from '@/components/Navbar/Navbar';
+import Footer from '@/components/Footer/Footer';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -14,6 +17,12 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
   subsets: ['latin'],
+});
+
+const rethinkSans = Rethink_Sans({
+  variable: '--font-rethink-sans',
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
 });
 
 export const metadata: Metadata = {
@@ -29,9 +38,16 @@ export default function RootLayout({
   return (
     <html
       lang='en'
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${rethinkSans.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
-      <body className='min-h-full flex flex-col'>{children}</body>
+      <body className='min-h-full flex flex-col'>
+        <Navbar />
+
+        <main className='flex-1'>{children}</main>
+
+        <Footer />
+      </body>
     </html>
   );
 }
