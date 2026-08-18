@@ -1,0 +1,35 @@
+{
+  "name": "@repo/prisma",
+  "version": "1.0.0",
+  "description": "",
+  "main": "client.ts",
+  "types": "prisma.ts",
+  "type": "module",
+  "exports": {
+    "./db": "./JS/prisma.js",
+    "./index": "./JS/index.js"
+  },
+  "scripts": {
+    "build": "tsc && pnpm dlx tsc-alias",
+    "lint": "eslint .",
+    "watch": "tsc --watch",
+    "check-types": "tsc --noEmit",
+    "reset-prisma": "pnpm prisma migrate reset"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.3.0",
+    "@prisma/client": "^7.3.0",
+    "@repo/eslint-config": "workspace:*",
+    "dotenv": "^17.2.2",
+    "prisma": "^7.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.3",
+    "dotenv-cli": "^11.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
+  }
+}
