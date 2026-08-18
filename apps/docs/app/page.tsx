@@ -1,7 +1,6 @@
 'use client';
 
-import HeroPage from './components/HomePage/HomePage';
-import {MakeAssign} from './components/MakeAssign/MakeAssign';
+import { MakeAssign } from './components/MakeAssign/MakeAssign';
 
 export default function Home() {
   // const [loading, setLoading] = useState(true);
@@ -9,7 +8,7 @@ export default function Home() {
   return (
     <>
       {/* <HeroPage /> */}
-      <MakeAssign/>
+      <MakeAssign />
       {/* {loading && <LoaderMain onComplete={() => setLoading(false)} />} */}
     </>
   );

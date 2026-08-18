@@ -1,4 +1,4 @@
-import type { LucideIcon } from "lucide-react";
+import type { LucideIcon } from 'lucide-react';
 
 export type Task = {
   title: string;
@@ -9,11 +9,11 @@ export type Task = {
   distance: string;
   requester: string;
   icon: LucideIcon;
-  iconType: "orange" | "yellow" | "green" | "purple" | "blue";
+  iconType: 'orange' | 'yellow' | 'green' | 'purple' | 'blue';
   urgent?: boolean;
 };
 
 export type TaskCardProps = {
   task: Task;
-  onViewDetails?: (task: Task) => void;
+  onViewDetails?: (_task: Task) => void;
 };
