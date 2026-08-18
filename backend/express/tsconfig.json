@@ -1,0 +1,25 @@
+{
+  "extends": "@repo/typescript-config/base.json",
+  "compilerOptions": {
+    "outDir": "./JS",
+    "rootDir": ".",
+    "target": "es2022",
+    "paths": {
+      "@app/*": ["./app/*"],
+      "@constants/*": ["./constants/*"],
+      "@server/*": ["./server/*"],
+      "@cluster/*": ["./clusterManager/*"],
+      "@api/*": ["./api/*"],
+      "@controller/*": ["./controller/*"],
+      "@middleware/*": ["./middleware/*"],
+      "@schemas/*": ["./middleware/schemas/*"],
+      "@utils/*": ["./utils/*"],
+      "@helper/*": ["./helper/*"],
+      "@email/*": ["./email/*"],
+      "@routes/*": ["./routes/*"],
+      "@data/*": ["./data/*"]
+    }
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules", "JS"]
+}

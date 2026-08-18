@@ -3,6 +3,9 @@
 
   "compilerOptions": {
     "paths": {
+      "@/*": ["./app/*"],
+      "@/constants/*": ["./constants/*"],
+      "@/types/*": ["./types/*"],
       "@repo/ui/*": ["../../packages/ui/src/components/*"]
     },
     "plugins": [
