@@ -14,6 +14,9 @@ import {
 } from "lucide-react";
 
 import type { Profile } from "@/types/profile.types";
+import { SectionHeader } from "@/components/SectionHeader/SectionHeader";
+import { InfoItem } from "@/components/InfoItem/InfoItem";
+import { ProfileStat } from "@/components/ProfileStat/ProfileStat";
 
 interface ProfileProps {
   profile: Profile;
@@ -245,86 +248,3 @@ export default function Profile({
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/* Reusable UI components                                                     */
-/* -------------------------------------------------------------------------- */
-
-function SectionHeader({
-  title,
-  description,
-}: {
-  title: string;
-  description: string;
-}) {
-  return (
-    <div className="px-5 py-5 sm:px-6">
-      <h2 className="text-[15px] font-semibold text-[#202020]">
-        {title}
-      </h2>
-
-      <p className="mt-1 text-[12px] text-[#777]">
-        {description}
-      </p>
-    </div>
-  );
-}
-
-function InfoItem({
-  icon,
-  label,
-  value,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-}) {
-  return (
-    <div className="flex gap-3">
-
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#f7f3f0] text-[#777]">
-        {icon}
-      </div>
-
-      <div className="min-w-0">
-        <p className="text-[11px] font-medium text-[#888]">
-          {label}
-        </p>
-
-        <p className="mt-1 truncate text-[13px] font-medium text-[#292929]">
-          {value}
-        </p>
-      </div>
-
-    </div>
-  );
-}
-
-function ProfileStat({
-  icon,
-  value,
-  label,
-}: {
-  icon: React.ReactNode;
-  value: string;
-  label: string;
-}) {
-  return (
-    <div className="flex items-center gap-2 border-r border-[#eeeeee] px-3 py-1 last:border-r-0">
-
-      <div className="text-[#c95740]">
-        {icon}
-      </div>
-
-      <div>
-        <p className="text-[16px] font-semibold text-[#202020]">
-          {value}
-        </p>
-
-        <p className="text-[10px] text-[#777]">
-          {label}
-        </p>
-      </div>
-
-    </div>
-  );
-}
