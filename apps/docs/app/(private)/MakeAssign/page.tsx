@@ -9,9 +9,9 @@ import {
   ChevronDown,
 } from "lucide-react";
 
+import { useRouter } from "next/navigation";
 import { TaskCard } from "@/components/TaskCard/TaskCard";
 import { assignments } from "@/constants/tasks";
-import { useRouter } from "next/navigation";
 
 export default function Page() {
   const [view, setView] = useState("grid");

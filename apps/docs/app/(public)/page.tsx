@@ -1,4 +1,5 @@
 'use client';
+
 import React, {useState} from 'react';
 import { HomePage }  from '@/components/HomePage/HomePage';
 import { LoaderMain } from '@/components/Loader/LoaderMain';

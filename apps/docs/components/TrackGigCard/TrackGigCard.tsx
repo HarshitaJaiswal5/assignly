@@ -8,12 +8,12 @@ import {
   MapPin,
 } from "lucide-react";
 
+import Link from "next/link";
 import type {
   GigStatus,
   TrackGig,
   TrackGigCardProps,
 } from "@/types/trackGigs.types";
-import Link from "next/link";
 
 const statusConfig: Record<
   GigStatus,

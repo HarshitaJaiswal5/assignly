@@ -1,7 +1,7 @@
+import { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import Sidebar from "@/components/SideBar/SideBar";
 import PrivateNavbar from "@/components/PrivateNavbar/PrivateNavbar";
-import { ReactNode } from "react";
 
 export default function layout({ children }: { children: ReactNode }) {
   return (
