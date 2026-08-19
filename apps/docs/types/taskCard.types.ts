@@ -1,19 +1,47 @@
-import type { LucideIcon } from 'lucide-react';
+export type AttachmentType = 'pdf' | 'image';
 
-export type Task = {
-  title: string;
-  description: string;
-  price: string;
-  due: string;
-  location: string;
-  distance: string;
-  requester: string;
-  icon: LucideIcon;
-  iconType: 'orange' | 'yellow' | 'green' | 'purple' | 'blue';
-  urgent?: boolean;
+export type Attachment = {
+  name: string;
+  meta?: string;
+  type: 'pdf' | 'image';
 };
 
-export type TaskCardProps = {
-  task: Task;
-  onViewDetails?: (_task: Task) => void;
+export type Assignment = {
+  id: number;
+
+  category: string;
+  title: string;
+  description: string;
+
+  requester: {
+    name: string;
+    verified: boolean;
+  };
+
+  payment: {
+    amount: number;
+    label: string;
+  };
+
+  due: {
+    date: string;
+    time: string;
+  };
+
+  handoff: {
+    location: string;
+    distance: string;
+  };
+
+  task: {
+    title: string;
+    description: string;
+  };
+
+  attachments: Attachment[];
+};
+
+export type AssignmentCardProps = {
+  assignment: Assignment;
+  onViewDetails?: (assignment: Assignment) => void;
 };

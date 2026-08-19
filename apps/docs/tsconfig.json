@@ -3,9 +3,11 @@
 
   "compilerOptions": {
     "paths": {
-      "@/*": ["./app/*"],
-      "@/constants/*": ["./constants/*"],
+      "@/app/*": ["./app/*"],
+      "@/components/*": ["./components/*"],
       "@/types/*": ["./types/*"],
+      "@/constants/*": ["./constants/*"],
+      "@/public/*": ["./public/*"],
       "@repo/ui/*": ["../../packages/ui/src/components/*"]
     },
     "plugins": [
