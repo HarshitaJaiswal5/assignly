@@ -1,91 +1,229 @@
-import {
-  BriefcaseBusiness,
-  BookOpen,
-  Calculator,
-  FileText,
-  PenLine,
-} from "lucide-react";
+import type { Assignment } from '@/types/taskCard.types';
 
-import type { Task } from "@/types/taskCard.types";
-
-export const tasks: Task[] = [
+export const assignments: Assignment[] = [
   {
-    title: "Print and bind CS301 project report",
+    id: 1,
+    category: 'Academic support',
+    title: 'Print and bind CS301 project report',
     description:
-      "Print the report, add a black spiral bind, and leave it at North Hall.",
-    price: "₹450",
-    due: "Due today · 6:00 PM",
-    location: "North Hall Print Desk",
-    distance: "0.8 km",
-    requester: "Nisha Kulkarni",
-    icon: FileText,
-    iconType: "orange",
-    urgent: true,
+      'Print the report, add a black spiral bind, and leave it at North Hall.',
+
+    requester: {
+      name: 'Nisha Kulkarni',
+      verified: true,
+    },
+
+    payment: {
+      amount: 450,
+      label: 'total',
+    },
+
+    due: {
+      date: 'Today',
+      time: '6:00 PM',
+    },
+
+    handoff: {
+      location: 'North Hall Print Desk',
+      distance: '0.8 km',
+    },
+
+    task: {
+      title: "What you'll do",
+      description:
+        'Print the attached CS301 report, use A4 double-sided pages, add a black spiral bind, and leave it at the North Hall Print Desk.',
+    },
+
+    attachments: [
+      {
+        name: 'CS301_Final_Report.pdf',
+        meta: '18 pages',
+        type: 'pdf',
+      },
+      {
+        name: 'Binding_reference.jpg',
+        type: 'image',
+      },
+    ],
   },
 
   {
-    title: "Deliver lab notebook to North Hall",
+    id: 2,
+    category: 'Delivery',
+    title: 'Deliver lab notebook to North Hall',
     description:
-      "Pick up the lab notebook from Science Block and hand it to Prof. Rao in North Hall.",
-    price: "₹300",
-    due: "Due today · 4:30 PM",
-    location: "North Hall",
-    distance: "0.6 km",
-    requester: "Prof. Arjun Rao",
-    icon: BookOpen,
-    iconType: "yellow",
-    urgent: true,
+      'Pick up the lab notebook from Science Block and hand it to Prof. Rao in North Hall.',
+
+    requester: {
+      name: 'Prof. Arjun Rao',
+      verified: true,
+    },
+
+    payment: {
+      amount: 300,
+      label: 'total',
+    },
+
+    due: {
+      date: 'Today',
+      time: '4:30 PM',
+    },
+
+    handoff: {
+      location: 'North Hall',
+      distance: '0.6 km',
+    },
+
+    task: {
+      title: "What you'll do",
+      description:
+        'Pick up the lab notebook from the Science Block and safely hand it over to Prof. Rao at North Hall.',
+    },
+
+    attachments: [],
   },
 
   {
-    title: "Format research references for PSY204",
+    id: 3,
+    category: 'Academic support',
+    title: 'Format research references for PSY204',
     description:
-      "Format the reference list in APA 7th edition for a PSY204 assignment.",
-    price: "₹250",
-    due: "Due tomorrow · 11:00 AM",
-    location: "Central Library",
-    distance: "1.2 km",
-    requester: "Dr. Meera Sharma",
-    icon: FileText,
-    iconType: "orange",
+      'Format the reference list in APA 7th edition for a PSY204 assignment.',
+
+    requester: {
+      name: 'Dr. Meera Sharma',
+      verified: true,
+    },
+
+    payment: {
+      amount: 250,
+      label: 'total',
+    },
+
+    due: {
+      date: 'Tomorrow',
+      time: '11:00 AM',
+    },
+
+    handoff: {
+      location: 'Central Library',
+      distance: '1.2 km',
+    },
+
+    task: {
+      title: "What you'll do",
+      description:
+        'Review and format the provided reference list according to APA 7th edition guidelines.',
+    },
+
+    attachments: [],
   },
 
   {
-    title: "Create Excel sheet for ECO102 data",
+    id: 4,
+    category: 'Data & Excel',
+    title: 'Create Excel sheet for ECO102 data',
     description:
-      "Organize the dataset in Excel with formulas and basic charts.",
-    price: "₹350",
-    due: "Due tomorrow · 5:00 PM",
-    location: "E Block",
-    distance: "1.0 km",
-    requester: "Rohan Deshpande",
-    icon: Calculator,
-    iconType: "green",
+      'Organize the dataset in Excel with formulas and basic charts.',
+
+    requester: {
+      name: 'Rohan Deshpande',
+      verified: true,
+    },
+
+    payment: {
+      amount: 350,
+      label: 'total',
+    },
+
+    due: {
+      date: 'Tomorrow',
+      time: '5:00 PM',
+    },
+
+    handoff: {
+      location: 'E Block',
+      distance: '1.0 km',
+    },
+
+    task: {
+      title: "What you'll do",
+      description:
+        'Organize the ECO102 dataset, add the required formulas, and create basic charts in Excel.',
+    },
+
+    attachments: [],
   },
 
   {
-    title: "Prepare slides for marketing presentation",
+    id: 5,
+    category: 'Presentation',
+    title: 'Prepare slides for marketing presentation',
     description:
-      "Create 10–12 slides for the marketing case study presentation.",
-    price: "₹400",
-    due: "Due in 2 days · 6:00 PM",
-    location: "Management Block",
-    distance: "1.5 km",
-    requester: "Ananya Iyer",
-    icon: BriefcaseBusiness,
-    iconType: "purple",
+      'Create 10–12 slides for the marketing case study presentation.',
+
+    requester: {
+      name: 'Ananya Iyer',
+      verified: true,
+    },
+
+    payment: {
+      amount: 400,
+      label: 'total',
+    },
+
+    due: {
+      date: 'In 2 days',
+      time: '6:00 PM',
+    },
+
+    handoff: {
+      location: 'Management Block',
+      distance: '1.5 km',
+    },
+
+    task: {
+      title: "What you'll do",
+      description:
+        'Create a clean 10–12 slide presentation covering the marketing case study and its key findings.',
+    },
+
+    attachments: [],
   },
 
   {
-    title: "Solve 5 calculus problems for MTH101",
+    id: 6,
+    category: 'Academic support',
+    title: 'Solve 5 calculus problems for MTH101',
     description:
-      "Solve and show steps for the attached calculus problems.",
-    price: "₹200",
-    due: "Due in 2 days · 9:00 AM",
-    location: "Online",
-    distance: "0.0 km",
-    requester: "Karthik Subramani",
-    icon: PenLine,
-    iconType: "blue",
+      'Solve and show steps for the attached calculus problems.',
+
+    requester: {
+      name: 'Karthik Subramani',
+      verified: false,
+    },
+
+    payment: {
+      amount: 200,
+      label: 'total',
+    },
+
+    due: {
+      date: 'In 2 days',
+      time: '9:00 AM',
+    },
+
+    handoff: {
+      location: 'Online',
+      distance: '2 km',
+    },
+
+    task: {
+      title: "What you'll do",
+      description:
+        'Solve the five attached calculus problems and provide clear step-by-step working for each solution.',
+    },
+
+    attachments: [],
   },
 ];
