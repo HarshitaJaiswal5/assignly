@@ -2,9 +2,9 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import googleLogo from '../../../public/googleLogo.png';
+import googleLogo from '@/';
 
-export default function HeroMain() {
+export default function AuthCard() {
   const [showAuth, setShowAuth] = useState(false);
 
   return (

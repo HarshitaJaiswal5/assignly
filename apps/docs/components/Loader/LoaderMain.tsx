@@ -11,7 +11,7 @@ interface LoaderMainProps {
 
 const letters = ['A', 'S', 'S', 'I', 'N', 'L', 'Y'];
 
-export default function LoaderMain({ onComplete }: LoaderMainProps) {
+export function LoaderMain({ onComplete }: LoaderMainProps) {
   const [step, setStep] = useState(0);
 
   const loaderRef = useRef(null);

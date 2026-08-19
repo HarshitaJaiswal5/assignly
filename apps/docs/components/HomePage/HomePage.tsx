@@ -12,7 +12,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Image from 'next/image';
 import { useEffect, useRef } from 'react';
-import heroPic from '../../../public/heroPic.png';
+import heroPic from '@/public/heroPic.png';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -43,7 +43,7 @@ const features = [
   },
 ];
 
-export default function HomePage() {
+export function HomePage() {
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
