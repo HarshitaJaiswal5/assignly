@@ -10,7 +10,7 @@ export default function Home() {
   return (
     <>
       <HomePage />
-      {loading && <LoaderMain onComplete={() => setLoading(false)} />}
+      {/* {loading && <LoaderMain onComplete={() => setLoading(false)} />} */}
     </>
   );
 }
