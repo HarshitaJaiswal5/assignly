@@ -1,11 +1,12 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { PrismaConfig } from 'prisma';
+import 'dotenv/config';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default {
-  schema: path.join('schemas', 'prisma', 'schema.prisma'),
+  schema: path.join('schemas', 'prisma'),
   migrations: {
     path: path.join(__dirname, 'migrations'),
   },
