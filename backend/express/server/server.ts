@@ -1,4 +1,4 @@
-import { app } from "@app/app.js";
+import { app } from "@/app/app.js";
 import { fileURLToPath } from "url";
 import "dotenv/config";
 

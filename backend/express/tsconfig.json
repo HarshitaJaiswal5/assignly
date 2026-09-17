@@ -5,21 +5,19 @@
     "rootDir": ".",
     "target": "es2022",
     "paths": {
-      "@app/*": ["./app/*"],
-      "@constants/*": ["./constants/*"],
-      "@server/*": ["./server/*"],
-      "@cluster/*": ["./clusterManager/*"],
-      "@api/*": ["./api/*"],
-      "@controller/*": ["./controller/*"],
-      "@middleware/*": ["./middleware/*"],
-      "@schemas/*": ["./middleware/schemas/*"],
-      "@utils/*": ["./utils/*"],
-      "@helper/*": ["./helper/*"],
-      "@email/*": ["./email/*"],
-      "@routes/*": ["./routes/*"],
-      "@data/*": ["./data/*"]
+      "@/controller/*": ["./controller/*"],
+      "@/constants/*": ["./constants/*"],
+      "@/interfaces/*": ["./interfaces/*"],
+      "@/middleware/*": ["./middleware/*"],
+      "@/routes/*": ["./routes/*"],
+      "@/schemas/*": ["./schemas/*"],
+      "@/services/*": ["./services/*"],
+      "@/types/*": ["./types/*"],
+      "@/server/*": ["./server/*"],
+      "@/app/*": ["./app/*"]
     }
   },
+
   "include": ["**/*.ts"],
   "exclude": ["node_modules", "JS"]
 }

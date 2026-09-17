@@ -1,6 +1,6 @@
 import cluster from 'cluster';
 import { availableParallelism } from 'os';
-import { serverExpress } from '@server/server.js';
+import { serverExpress } from '@/server/server.js';
 
 const totalCPUs = availableParallelism();
 

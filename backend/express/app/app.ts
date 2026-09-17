@@ -1,4 +1,5 @@
-import { corsOptions } from '@constants/cors.options.js';
+import { corsOptions } from '@/constants/cors.options.js';
+import { errorHandler } from '@/middleware/error.middleware.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import crypto from 'crypto';
@@ -6,9 +7,7 @@ import type { Application, NextFunction, Request, Response } from 'express';
 import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import { catchAsync } from 'zodex-axon/core';
-import { BadRequest, globalErrorHandler } from 'zodex-axon/errors';
-import { OkResponseStrategy } from 'zodex-axon/responses';
+import  authRouter from '@/routes/auth.routes.js';
 
 const app: Application = express();
 
@@ -23,7 +22,8 @@ app.get("/", (req, res) => {
   res.send("Server is working!");
 });
 
+app.use('/api/auth', authRouter);
 
-app.use(globalErrorHandler);
+app.use(errorHandler);
 
 export { app };
