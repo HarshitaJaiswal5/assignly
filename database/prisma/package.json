@@ -13,7 +13,7 @@
     "build": "tsc && pnpm dlx tsc-alias",
     "lint": "eslint .",
     "watch": "tsc --watch",
-    "check-types": "tsc --noEmit",
+    "check-types": "prisma generate && tsc --noEmit",
     "reset-prisma": "pnpm prisma migrate reset"
   },
   "keywords": [],
