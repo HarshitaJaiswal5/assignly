@@ -23,13 +23,13 @@
     "@prisma/adapter-pg": "^7.3.0",
     "@prisma/client": "^7.3.0",
     "@repo/eslint-config": "workspace:*",
-    "dotenv": "^17.2.2",
-    "prisma": "^7.3.0"
+    "dotenv": "^17.2.2"
   },
   "devDependencies": {
     "@types/node": "^22.15.3",
     "dotenv-cli": "^11.0.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "prisma": "^7.3.0"
   }
 }
