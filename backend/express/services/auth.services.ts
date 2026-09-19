@@ -1,4 +1,4 @@
-import { userRepository } from "@repositories/user.repository.js";
+import { userRepository, UserRepository } from "@repositories/user.repository.js";
 import { BadRequestError } from "@utils/ApiError.js";
 
 interface AuthUserData {
@@ -9,6 +9,10 @@ interface AuthUserData {
 }
 
 export class AuthService {
+  constructor(
+    private readonly userRepository: UserRepository
+  ) {}
+
   async createOrGetUser(data: AuthUserData) {
     if (!data.id || !data.email) {
       throw new BadRequestError(
@@ -17,13 +21,13 @@ export class AuthService {
     }
 
     const existingUser =
-      await userRepository.findById(data.id);
+      await this.userRepository.findById(data.id);
 
     if (existingUser) {
       return existingUser;
     }
 
-    return userRepository.create({
+    return this.userRepository.create({
       id: data.id,
       email: data.email,
       name: data.name,
@@ -32,4 +36,4 @@ export class AuthService {
   }
 }
 
-export const authService = new AuthService();
+export const authService = new AuthService(userRepository);

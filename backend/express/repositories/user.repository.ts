@@ -1,9 +1,8 @@
-import { Prisma } from "@repo/prisma/db";
-import { prisma } from "@repo/prisma/db";
+import { Prisma , prisma} from "@repo/prisma/db";
 
 type PrismaClient = typeof prisma;
 
-class UserRepository {
+export class UserRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
   async findById(id: string) {
