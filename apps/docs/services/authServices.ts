@@ -1,5 +1,6 @@
 import { signIn, signOut } from "next-auth/react";
 
+
 export class AuthService {
   async signInWithGoogle() {
     return signIn("google", {

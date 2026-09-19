@@ -1,7 +1,8 @@
+import React from 'react';
+import { redirect } from 'next/navigation';
 import Navbar from '@/components/Navbar/Navbar';
 import Footer from '@/components/Footer/Footer';
 import { auth } from '@/lib/auth/auth';
-import { redirect } from 'next/navigation';
 
 export default async function PublicLayout ({
   children,

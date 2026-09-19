@@ -1,7 +1,8 @@
+import React from 'react';
+import { redirect } from 'next/navigation';
 import PrivateNavbar from '@/components/PrivateNavbar/PrivateNavbar';
 import Sidebar from '@/components/SideBar/SideBar';
 import { auth } from '@/lib/auth/auth';
-import { redirect } from 'next/navigation';
 
 export default async function PrivateLayout({
   children,

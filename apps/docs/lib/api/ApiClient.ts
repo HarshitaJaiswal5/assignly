@@ -1,12 +1,4 @@
-export class ApiError extends Error {
-  constructor(
-    public readonly status: number,
-    public readonly message: string
-  ) {
-    super(message);
-    this.name = "ApiError";
-  }
-}
+import { ApiError } from "@/lib/api/ApiError";
 
 export class ApiClient {
   private readonly baseUrl: string;
@@ -31,7 +23,7 @@ export class ApiClient {
           ...options.headers,
         },
         credentials: "include",
-        signal: options.signal ?? AbortSignal.timeout(10000),
+        signal: options.signal ?? AbortSignal.timeout(10_000),
       });
 
       if (!response.ok) {
@@ -51,7 +43,7 @@ export class ApiClient {
         return undefined as T;
       }
 
-      return response.json();
+      return response.json() as Promise<T>;
     } catch (error) {
       if (error instanceof ApiError) {
         throw error;
@@ -61,7 +53,10 @@ export class ApiClient {
     }
   }
 
-  public get<T>(endpoint: string, options?: RequestInit) {
+  public get<T>(
+    endpoint: string,
+    options?: RequestInit
+  ): Promise<T> {
     return this.request<T>(endpoint, {
       ...options,
       method: "GET",
@@ -72,11 +67,14 @@ export class ApiClient {
     endpoint: string,
     body?: unknown,
     options?: RequestInit
-  ) {
+  ): Promise<T> {
     return this.request<T>(endpoint, {
       ...options,
       method: "POST",
-      body: body ? JSON.stringify(body) : undefined,
+      body:
+        body !== undefined
+          ? JSON.stringify(body)
+          : undefined,
     });
   }
 
@@ -84,11 +82,14 @@ export class ApiClient {
     endpoint: string,
     body?: unknown,
     options?: RequestInit
-  ) {
+  ): Promise<T> {
     return this.request<T>(endpoint, {
       ...options,
       method: "PUT",
-      body: body ? JSON.stringify(body) : undefined,
+      body:
+        body !== undefined
+          ? JSON.stringify(body)
+          : undefined,
     });
   }
 
@@ -96,15 +97,21 @@ export class ApiClient {
     endpoint: string,
     body?: unknown,
     options?: RequestInit
-  ) {
+  ): Promise<T> {
     return this.request<T>(endpoint, {
       ...options,
       method: "PATCH",
-      body: body ? JSON.stringify(body) : undefined,
+      body:
+        body !== undefined
+          ? JSON.stringify(body)
+          : undefined,
     });
   }
 
-  public delete<T>(endpoint: string, options?: RequestInit) {
+  public delete<T>(
+    endpoint: string,
+    options?: RequestInit
+  ): Promise<T> {
     return this.request<T>(endpoint, {
       ...options,
       method: "DELETE",
