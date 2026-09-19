@@ -1,28 +1,28 @@
+import { Prisma } from "@repo/prisma/db";
 import { prisma } from "@repo/prisma/db";
 
-export class UserRepository {
+type PrismaClient = typeof prisma;
+
+class UserRepository {
+  constructor(private readonly prisma: PrismaClient) {}
+
   async findById(id: string) {
-    return prisma.user.findUnique({
+    return this.prisma.user.findUnique({
       where: { id },
     });
   }
 
   async findByEmail(email: string) {
-    return prisma.user.findUnique({
+    return this.prisma.user.findUnique({
       where: { email },
     });
   }
 
-  async create(data: {
-    id?: string;
-    email: string;
-    name?: string | null;
-    image?: string | null;
-  }) {
-    return prisma.user.create({
+  async create(data: Prisma.UserCreateInput) {
+    return this.prisma.user.create({
       data,
     });
   }
 }
 
-export const userRepository = new UserRepository();
+export const userRepository = new UserRepository(prisma);
