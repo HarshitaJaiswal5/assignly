@@ -10,7 +10,7 @@ interface AuthUserData {
 
 export class AuthService {
   constructor(
-    private readonly userRepository: UserRepository
+    private readonly users: UserRepository
   ) {}
 
   async createOrGetUser(data: AuthUserData) {
@@ -21,13 +21,13 @@ export class AuthService {
     }
 
     const existingUser =
-      await this.userRepository.findById(data.id);
+      await this.users.findById(data.id);
 
     if (existingUser) {
       return existingUser;
     }
 
-    return this.userRepository.create({
+    return this.users.create({
       id: data.id,
       email: data.email,
       name: data.name,
