@@ -35,6 +35,9 @@ jobs:
 
       - name: Lint
         run: pnpm run lint
+
+      - name: Generate Prisma Client
+        run: pnpm --filter @repo/prisma exec prisma generate
       
       - name: Build Prisma
         run: pnpm --filter @repo/prisma build
