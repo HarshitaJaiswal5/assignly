@@ -1,4 +1,6 @@
 import { corsOptions } from '@constants/cors.options.js';
+import { errorMiddleware } from '@middleware/error.middleware.js';
+import authRouter from '@routes/auth.routes.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import crypto from 'crypto';
@@ -23,7 +25,10 @@ app.get("/", (req, res) => {
   res.send("Server is working!");
 });
 
+// app.use("/api/auth", authRouter);
 
-app.use(globalErrorHandler);
+
+// app.use(globalErrorHandler);
+app.use(errorMiddleware);
 
 export { app };

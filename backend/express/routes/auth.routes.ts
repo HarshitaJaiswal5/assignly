@@ -1,15 +1,11 @@
 import { Router } from "express";
-
-import { googleLogin } from "@/controller/auth/auth.controller.js";
-import { validate } from "@/middleware/validate.middleware.js";
-import { googleLoginSchema } from "@/schemas/auth.schema.js";
+import { authController } from "@controller/auth/auth.controller.js";
 
 const authRouter = Router();
 
 authRouter.post(
-  "/google",
-  validate(googleLoginSchema),
-  googleLogin
+  "/user",
+  authController.createOrGetUser
 );
 
 export default authRouter;

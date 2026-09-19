@@ -1,12 +1,12 @@
-import type {
+import {
   Request,
   Response,
   NextFunction,
 } from "express";
 
-import { ZodError } from "zod";
+import { ApiError } from "@utils/ApiError.js";
 
-export const errorHandler = (
+export const errorMiddleware = (
   error: unknown,
   _req: Request,
   res: Response,
@@ -14,24 +14,13 @@ export const errorHandler = (
 ) => {
   console.error(error);
 
-  // Zod validation error
-  if (error instanceof ZodError) {
-    return res.status(400).json({
-      success: false,
-      message: "Validation failed",
-      errors: error.flatten().fieldErrors,
-    });
-  }
-
-  // Known application error
-  if (error instanceof Error) {
-    return res.status(500).json({
+  if (error instanceof ApiError) {
+    return res.status(error.statusCode).json({
       success: false,
       message: error.message,
     });
   }
 
-  // Unknown error
   return res.status(500).json({
     success: false,
     message: "Internal server error",

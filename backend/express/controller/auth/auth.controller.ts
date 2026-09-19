@@ -1,19 +1,22 @@
-import type { Request, Response } from "express";
+import { Request, Response } from "express";
+import { authService } from "@services/auth.services.js";
+import { ApiResponse } from "@utils/ApiResponse.js";
+import { asyncController } from "@utils/asyncController.js";
 
-import { AuthService } from "@/services/auth.services.js";
+export class AuthController {
+  createOrGetUser = asyncController(
+    async (req: Request, res: Response) => {
+      const user = await authService.createOrGetUser(
+        req.body
+      );
 
-export const googleLogin = async (
-  req: Request,
-  res: Response
-) => {
-  const { credential } = req.body;
+      return ApiResponse.success(
+        res,
+        user,
+        "User synced successfully"
+      );
+    }
+  );
+}
 
-  const result =
-    await AuthService.loginWithGoogle(credential);
-
-  return res.status(200).json({
-    success: true,
-    message: "Login successful",
-    data: result,
-  });
-};
+export const authController = new AuthController();
