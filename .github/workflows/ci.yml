@@ -35,6 +35,9 @@ jobs:
 
       - name: Lint
         run: pnpm run lint
+      
+      - name: Build Prisma
+        run: pnpm --filter @repo/prisma build
 
       - name: Type Check
         run: pnpm run check-types
