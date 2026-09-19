@@ -13,7 +13,7 @@ const menuItems = [
   {
     label: 'Make & Earn',
     icon: Home,
-    href: '/dashboard',
+    href: '/Dashboard',
   },
   {
     label: 'Track Gigs & Submissions',
@@ -34,7 +34,7 @@ const menuItems = [
 
 export default function Sidebar() {
   return (
-    <aside className="flex h-screen w-[280px] flex-col border-r border-gray-200 bg-white px-4 py-6">
+    <aside className="fixed left-0 top-0 flex h-screen w-[280px] flex-col border-r border-gray-200 bg-white px-4 py-6">
       {/* Logo */}
       <div className="mb-10 flex items-center gap-2 px-3">
         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-500">

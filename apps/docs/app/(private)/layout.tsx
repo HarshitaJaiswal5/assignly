@@ -1,31 +1,25 @@
-import { ReactNode } from "react";
-import { redirect } from "next/navigation";
-import Sidebar from "@/components/SideBar/SideBar";
-import PrivateNavbar from "@/components/PrivateNavbar/PrivateNavbar";
+import PrivateNavbar from '@/components/PrivateNavbar/PrivateNavbar';
+import Sidebar from '@/components/SideBar/SideBar';
+import { auth } from '@/lib/auth/auth';
+import { redirect } from 'next/navigation';
 
-export default function layout({ children }: { children: ReactNode }) {
+export default async function PrivateLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  const session = await auth();
+  if (!session) {
+    redirect('/');
+  }
   return (
-    <div className="h-screen overflow-hidden bg-[#fafafa]">
-      <div className="flex h-full">
-        {/* SIDEBAR — never scrolls */}
-        <aside className="h-full w-[250px] shrink-0 overflow-hidden border-r bg-white">
-          <Sidebar />
-        </aside>
+    <div className='min-h-screen bg-[#FFFDF5]'>
+      <Sidebar />
 
-        {/* RIGHT SIDE */}
-        <div className="flex min-w-0 flex-1 flex-col">
-          
-          {/* NAVBAR — never scrolls */}
-          <div className="shrink-0">
-            <PrivateNavbar />
-          </div>
+      <div className='ml-70 flex min-h-screen flex-col'>
+        <PrivateNavbar />
 
-          {/* ONLY THIS SCROLLS */}
-          <main className="min-h-0 flex-1 overflow-y-auto">
-            {children}
-          </main>
-
-        </div>
+        <main className='flex-1'>{children}</main>
       </div>
     </div>
   );
