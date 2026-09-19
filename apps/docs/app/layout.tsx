@@ -5,9 +5,7 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono, Rethink_Sans } from 'next/font/google';
 
 import '@repo/ui/globals.css';
-
-import Navbar from '@/components/Navbar/Navbar';
-import Footer from '@/components/Footer/Footer';
+import Providers from '../providers/SessionProvider';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -43,7 +41,9 @@ export default function RootLayout({
     >
       <body className='min-h-full flex flex-col'>
 
-        <main className='flex-1'>{children}</main>
+        <Providers>
+          <main className='flex-1'>{children}</main>
+        </Providers>
 
       </body>
     </html>

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import googleLogo from "@/public/googleLogo.png";
+import { authService } from "../../services/authServices";
 
 interface SignInModalProps {
   onClose: () => void;
@@ -43,7 +44,7 @@ export const AuthCard = ({ onClose }: SignInModalProps) => {
 
         {/* Google */}
         <button
-          onClick={() => console.log("Google clicked")}
+          onClick={() => authService.signInWithGoogle()}
           className="mt-8 flex w-full items-center justify-center gap-3 rounded-xl border border-[#DDD8CE] bg-white px-5 py-4 text-sm font-semibold text-[#142235] shadow-sm transition hover:border-[#F45124] hover:bg-[#FFF8F4]"
         >
           <Image

@@ -6,6 +6,7 @@ import importPlugin from 'eslint-plugin-import';
 import tseslint from 'typescript-eslint';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import globals from 'globals';
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -45,12 +46,17 @@ export const config = [
     files: ['**/*.ts', '**/*.tsx'],
     languageOptions: {
       parser: tseslint.parser,
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+      },
     },
     plugins: {
       '@typescript-eslint': tseslint.plugin,
     },
     rules: {
       ...tseslint.configs.recommended.rules,
+      'no-undef': 'off',
       'no-unused-vars': 'off',
       '@typescript-eslint/no-unused-vars': [
         'error',

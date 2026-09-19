@@ -1,3 +1,5 @@
+'use client'
+
 export default function Footer() {
   return (
     <footer className='border-t border-black/[0.06] bg-[#fffdf9]'>
