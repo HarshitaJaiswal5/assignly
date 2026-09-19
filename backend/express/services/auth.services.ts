@@ -1,70 +1,35 @@
-import { GoogleAuth, OAuth2Client } from "google-auth-library";
-import jwt from "jsonwebtoken";
+import { userRepository } from "@repositories/user.repository.js";
+import { BadRequestError } from "@utils/ApiError.js";
 
-import { GoogleUser, AuthUser  } from "@/interfaces/auth.interface.js"
-
-
-const googleClient = new OAuth2Client(
-  process.env.GOOGLE_CLIENT_ID
-);
+interface AuthUserData {
+  id: string;
+  email: string;
+  name?: string | null;
+  image?: string | null;
+}
 
 export class AuthService {
-  static async loginWithGoogle(
-    credential: string
-  ) {
-    const ticket = await googleClient.verifyIdToken({
-      idToken: credential,
-      audience: process.env.GOOGLE_CLIENT_ID,
-    });
-
-    const payload = ticket.getPayload();
-
-    if (!payload?.sub || !payload.email) {
-      throw new Error("Invalid Google account");
+  async createOrGetUser(data: AuthUserData) {
+    if (!data.id || !data.email) {
+      throw new BadRequestError(
+        "User ID and email are required"
+      );
     }
 
-    const googleUser: GoogleUser = {
-      googleId: payload.sub,
-      email: payload.email,
-      name: payload.name ?? "Campus Loop User",
-      avatar: payload.picture ?? "/default-avatar.png" ,
-    };
+    const existingUser =
+      await userRepository.findById(data.id);
 
-    /*
-     * TODO:
-     *
-     * const existingUser = await User.findOne({
-     *   googleId: googleUser.googleId
-     * });
-     *
-     * if (!existingUser) {
-     *   create user
-     * }
-     */
+    if (existingUser) {
+      return existingUser;
+    }
 
-    // Temporary user until DB is connected
-    const user: AuthUser = {
-      id: googleUser.googleId,
-      googleId: googleUser.googleId,
-      email: googleUser.email,
-      name: googleUser.name,
-      avatar: googleUser.avatar,
-    };
-
-    const token = jwt.sign(
-      {
-        userId: user.id,
-        email: user.email,
-      },
-      process.env.JWT_SECRET!,
-      {
-        expiresIn: "7d",
-      }
-    );
-
-    return {
-      user,
-      token,
-    };
+    return userRepository.create({
+      id: data.id,
+      email: data.email,
+      name: data.name,
+      image: data.image,
+    });
   }
 }
+
+export const authService = new AuthService();

@@ -17,7 +17,9 @@
       "@helper/*": ["./helper/*"],
       "@email/*": ["./email/*"],
       "@routes/*": ["./routes/*"],
-      "@data/*": ["./data/*"]
+      "@data/*": ["./data/*"],
+      "@repositories/*": ["./repositories/*"],
+      "@services/*": ["./services/*"]
     }
   },
   "include": ["**/*.ts"],
