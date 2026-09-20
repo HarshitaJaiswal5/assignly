@@ -6,18 +6,16 @@ import {
   CheckCircle2,
   Clock3,
   History,
+  SlidersHorizontal,
 } from "lucide-react";
-
-import type {
-  GigStatus,
-  TrackGig,
-} from "@/types/trackGigs.types";
-
+import type { TrackGig } from "@/types/trackGigs.types";
 import { TrackGigCard } from "@/components/TrackGigCard/TrackGigCard";
 import type { TrackTab } from "@/components/EmptyState/EmptyState";
 import { SummaryCard } from '@/components/SummaryCard/SummaryCard';
 import { TabButton } from "@/components/TabButton/TabButton";
 import { EmptyState } from "@/components/EmptyState/EmptyState";
+import type { GigFilters as GigFilterState } from "@/types/gigFilters.types";
+import { GigFilters } from "@/components/GigFilters/GigFilters";
 
 interface TrackGigsProps {
   gigs: TrackGig[];
@@ -30,6 +28,14 @@ export default function TrackGigs({
 }: TrackGigsProps) {
   const [activeTab, setActiveTab] =
     useState<TrackTab>("ongoing");
+  
+  const [filters, setFilters] = useState<GigFilterState>({
+    search: "",
+    subject: "All subjects",
+    radius: 5,
+    college: "",
+    location: ""
+  })
 
   const ongoingGigs = useMemo(
     () =>
@@ -56,33 +62,31 @@ export default function TrackGigs({
       ? ongoingGigs
       : pastGigs;
 
+  const handleCurrentLocation = () => {}
+
   return (
     <div className="min-h-full bg-[#fafafa] px-4 py-6 sm:px-6 lg:px-8">
-
       <div className="mx-auto max-w-5xl">
-
-        {/* Header */}
-        <div className="mb-7">
-
-          <div className="flex items-center gap-2">
-
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#f4eee9] text-[#c95740]">
-              <BriefcaseBusiness size={18} />
-            </div>
-
-            <div>
-              <h1 className="text-[25px] font-semibold tracking-[-0.5px] text-[#181818]">
-                Track your gigs
-              </h1>
-
-              <p className="mt-1 text-[13px] text-[#777]">
-                Keep track of the work you've taken and completed.
-              </p>
-            </div>
-
-          </div>
-
+        <div className='mb-4 mx-2 flex items-center gap-5'>
+        <div className='flex h-8 w-8 items-center justify-center rounded-lg bg-[#f4eee9] text-[#c95740]'>
+          <SlidersHorizontal size={16} />
         </div>
+
+        <div className=''>
+          <h1 className='text-[20px] font-semibold tracking-[-0.5px] text-[#181818]'>
+            Find Gigs
+          </h1>
+
+          <p className="text-[13px] text-[#777]">Search and filter gigs near you</p>
+        </div>
+      </div>
+
+
+        <GigFilters
+        filters = { filters }
+        onChange = { setFilters }
+        onCurrentLocation = { handleCurrentLocation }
+        />
 
         {/* Summary */}
         <div className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
