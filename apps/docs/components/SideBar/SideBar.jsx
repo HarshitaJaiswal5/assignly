@@ -1,4 +1,4 @@
-'use client';
+import { auth } from '@/lib/auth/auth';
 
 import {
   Home,
@@ -7,6 +7,7 @@ import {
   FileText,
   CircleHelp,
   CircleUserRound,
+  Repeat2,
 } from 'lucide-react';
 
 const menuItems = [
@@ -32,13 +33,21 @@ const menuItems = [
   },
 ];
 
-export default function Sidebar() {
+export default async function Sidebar() {
+  
+  const session = await auth();
+
   return (
     <aside className="fixed left-0 top-0 flex h-screen w-[280px] flex-col border-r border-gray-200 bg-white px-4 py-6">
       {/* Logo */}
       <div className="mb-10 flex items-center gap-2 px-3">
-        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-500">
-          <CircleUserRound className="h-5 w-5 text-white" />
+        <div className="flex h-8 w-8 items-center justify-center rounded-full">
+           <Repeat2
+            strokeWidth={4}
+            size={25}
+            color='#F45124'
+            absoluteStrokeWidth
+          />
         </div>
 
         <span className="text-xl font-bold tracking-tight text-[#152330]">
@@ -85,19 +94,19 @@ export default function Sidebar() {
       <div className="mt-auto">
         {/* User */}
         <div className="mb-8 flex items-center gap-3 px-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-orange-600 text-sm font-semibold text-white">
+          {/* <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-orange-600 text-sm font-semibold text-white">
             AM
-          </div>
+          </div> */}
 
-          <div className="min-w-0">
+          {/* <div className="min-w-0">
             <p className="truncate text-sm font-semibold text-gray-900">
-              Aarav Mehta
+              {session.user.name || "User"}
             </p>
 
             <p className="text-sm text-gray-500">
               Student
             </p>
-          </div>
+          </div> */}
         </div>
 
         {/* Help */}
