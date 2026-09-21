@@ -12,7 +12,7 @@ export default function PrivateNavbar() {
   }
 
   return (
-    <header className="flex h-18 items-center justify-between border-b border-[#E8E1D5] bg-[#FFFDF5] px-6">
+    <header className="flex h-18 items-center justify-between border-b border-[#E8E1D5] px-6">
       <button className="flex items-center gap-2 text-sm font-medium text-[#F45124] transition hover:opacity-80">
         <ArrowLeft size={18} />
         <span>Back to Make & Earn</span>

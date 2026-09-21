@@ -1,11 +1,11 @@
 'use client'
 
-import TrackGigs from "@/components/TrackGigs/TrackGigs";
+import Earn from "@/components/Earn/Earn";
 import { trackGigs } from "@/constants/trackGigs";
 
-export default function TrackGigsPage() {
+export default function EarnPage() {
   return (
-    <TrackGigs
+    <Earn
       gigs={trackGigs}
       onViewDetails={(gig) => {
         console.log("View gig:", gig.id);

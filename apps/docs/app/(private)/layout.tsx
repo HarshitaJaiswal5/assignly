@@ -10,11 +10,12 @@ export default async function PrivateLayout({
   children: React.ReactNode;
 }>) {
   const session = await auth();
+  
   if (!session) {
     redirect('/');
   }
   return (
-    <div className='min-h-screen bg-[#FFFDF5]'>
+    <div className='min-h-screen bg-white'>
       <Sidebar />
 
       <div className='ml-70 flex min-h-screen flex-col'>
