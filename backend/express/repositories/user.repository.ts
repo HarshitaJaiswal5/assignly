@@ -22,6 +22,25 @@ export class UserRepository {
       data,
     });
   }
+
+  async findSession(sessionToken: string) {
+    return this.db.session.findUnique({
+      where: {
+        sessionToken,
+      },
+      include: {
+        user: true,
+      },
+    });
+  }
+
+  async deleteSession(sessionToken: string) {
+    await this.db.session.deleteMany({
+      where: {
+        sessionToken,
+      },
+    });
+  }
 }
 
 export const userRepository = new UserRepository(prisma);

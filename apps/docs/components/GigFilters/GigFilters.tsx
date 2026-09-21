@@ -45,6 +45,7 @@ const toolbarBtnIdle =
 const toolbarBtnActive = 'border-[#F9D5C6] bg-[#FFF3EA] text-[#F04E23]';
 
 const TOP_RATIO = 0.14; // modal rests 14% of the screen height from the top
+const SEARCH_TOP = 24; // px from the top of the screen while searching
 
 export function GigFilters({
   filters,
@@ -53,22 +54,49 @@ export function GigFilters({
   isGettingLocation = false,
 }: GigFiltersProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [searchFocused, setIsSearchFocused] = useState(false);
+  const [searchFocused, setSearchFocused] = useState(false);
+  const [searchOffset, setSearchOffset] = useState(0);
   // top: where the modal rests. fromY: how far it sits from the bar when closed.
   const [anchor, setAnchor] = useState({ top: 120, fromY: 0 });
-  const barRef = useRef<HTMLElement>(null);
+
+  const barRef = useRef<HTMLElement>(null); // the static bar (modal measures this)
+  const searchRef = useRef<HTMLDivElement>(null); // only this travels
 
   const updateFilter = <K extends keyof typeof filters>(
     key: K,
     value: (typeof filters)[K]
   ) => onChange({ ...filters, [key]: value });
 
+  /* ---------------- Search: only the search field travels ---------------- */
+
+  const handleSearchFocus = () => {
+    const rect = searchRef.current?.getBoundingClientRect();
+    // Only ever move UP
+    if (rect) setSearchOffset(Math.min(0, SEARCH_TOP - rect.top));
+    setSearchFocused(true);
+  };
+
+  const handleSearchBlur = () => {
+    setSearchFocused(false);
+    setSearchOffset(0);
+  };
+
+  /* ---------------- Modal ---------------- */
+
   const open = () => {
     if (isOpen) return;
+
+    // Drop the search state so the field settles back while the modal opens
+    setSearchFocused(false);
+    setSearchOffset(0);
+    (document.activeElement as HTMLElement | null)?.blur();
+
     const rect = barRef.current?.getBoundingClientRect();
     const top = Math.round(window.innerHeight * TOP_RATIO);
+
     // Place the closed modal exactly at the bar (still invisible)...
     setAnchor({ top, fromY: rect ? rect.top - top : -16 });
+
     // ...then open on the next frames so it animates from the bar
     requestAnimationFrame(() => requestAnimationFrame(() => setIsOpen(true)));
   };
@@ -78,9 +106,9 @@ export function GigFilters({
     (document.activeElement as HTMLElement | null)?.blur();
   };
 
-  // Esc to close + lock page scroll while open
+  // Esc to close + lock page scroll while the modal or search is active
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen && !searchFocused) return;
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && close();
     document.addEventListener('keydown', onKey);
     const prev = document.body.style.overflow;
@@ -89,7 +117,9 @@ export function GigFilters({
       document.removeEventListener('keydown', onKey);
       document.body.style.overflow = prev;
     };
-  }, [isOpen]);
+  }, [isOpen, searchFocused]);
+
+  /* ---------------- Filters helpers ---------------- */
 
   const clearFilters = () =>
     onChange({
@@ -159,7 +189,7 @@ export function GigFilters({
 
   return (
     <>
-      {/* Overlay */}
+      {/* Overlay (modal OR search focus) */}
       <div
         aria-hidden
         onMouseDown={close}
@@ -171,34 +201,59 @@ export function GigFilters({
       />
 
       <div className='mb-6'>
-        {/* ================= FILTER BAR (always simple, never moves) ================= */}
+        {/* ================= FILTER BAR (static, never moves) ================= */}
         <section
           ref={barRef}
-          className={`relative rounded-2xl border bg-white p-2 transition-[box-shadow,border-color] duration-300 ${
-            searchFocused
-              ? 'z-50 border-[#F9D5C6] shadow-[0_16px_40px_-12px_rgba(240,78,35,0.25)]'
-              : 'border-[#e8e8e8] shadow-sm hover:shadow-md'
-          }`}
+          className='rounded-2xl border border-[#e8e8e8] bg-white p-2 shadow-sm transition-shadow hover:shadow-md'
         >
           <div className='flex w-full items-center gap-2'>
-            <div className='relative min-w-0 flex-1'>
-              <Search
+            {/* Search: the only piece that travels to the top */}
+            <div
+              ref={searchRef}
+              style={{ transform: `translateY(${searchOffset}px)` }}
+              className={`relative min-w-0 flex-1 rounded-xl transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${
+                searchFocused
+                  ? 'z-50 shadow-[0_16px_40px_-12px_rgba(240,78,35,0.35)]'
+                  : ''
+              }`}
+            >
+              {/* <Search
                 strokeWidth={2.6}
-                className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#F04E23]'
+                className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 focus:text-orange-200 text-[#F04E23]'
               />
               <input
-                onFocus={() => setIsSearchFocused(true)}
-                onBlur={() => setIsSearchFocused(false)}
+                onFocus={handleSearchFocus}
+                onBlur={handleSearchBlur}
                 onKeyDown={(e) => e.key === 'Escape' && e.currentTarget.blur()}
                 value={filters.search}
                 onChange={(e) => updateFilter('search', e.target.value)}
                 placeholder='Search gigs'
-                className='h-11 w-full rounded-xl border border-gray-200 bg-white pl-9 pr-3 text-sm text-gray-800 outline-none transition placeholder:text-gray-400 focus:border-[#F04E23]/60 focus:ring-2 focus:ring-[#FDE8DF]'
-              />
+                className='h-11 w-full rounded-xl border border-gray-200 bg-white pl-9 pr-3 text-sm text-gray-800 outline-none transition placeholder:text-gray-400 focus:ring-2 focus:ring-[#FDE8DF]'
+              /> 
+              */}
+              <div className='group relative'>
+                <Search
+                  strokeWidth={3}
+                  className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#F04E23] transition-all duration-200 group-focus-within:text-[#f8a27d]'
+                />
+
+                <input
+                  onFocus={handleSearchFocus}
+                  onBlur={handleSearchBlur}
+                  onKeyDown={(e) =>
+                    e.key === 'Escape' && e.currentTarget.blur()
+                  }
+                  value={filters.search}
+                  onChange={(e) => updateFilter('search', e.target.value)}
+                  placeholder='Search gigs'
+                  className='h-11 w-full rounded-xl border border-gray-200 bg-white pl-9 pr-3 text-sm text-gray-800 outline-none transition placeholder:text-gray-400 focus:ring-2 focus:ring-[#FDE8DF]'
+                />
+              </div>
             </div>
 
             <button
               type='button'
+              onMouseDown={(e) => e.preventDefault()}
               onClick={open}
               aria-haspopup='dialog'
               className={`${toolbarBtnBase} hidden sm:flex ${
@@ -212,13 +267,14 @@ export function GigFilters({
 
             <button
               type='button'
+              onMouseDown={(e) => e.preventDefault()}
               onClick={open}
               aria-haspopup='dialog'
               className={`${toolbarBtnBase} font-medium ${
                 activeFilters.length > 0 ? toolbarBtnActive : toolbarBtnIdle
               }`}
             >
-              <SlidersHorizontal className='h-4 w-4' strokeWidth={2.5} />
+              <SlidersHorizontal className='h-4 w-4 text-[#F04E23]' strokeWidth={2.5} />
               <span className='hidden sm:inline'>Filters</span>
               {activeFilters.length > 0 && (
                 <span className='flex h-5 min-w-5 items-center justify-center rounded-full bg-[#F04E23] px-1.5 text-[11px] font-semibold text-white'>
@@ -402,7 +458,7 @@ export function GigFilters({
           </div>
 
           {/* Footer */}
-          <div className='mt-6 flex justify-end gap-3'>
+          <div className='mt-6 flex justify-between gap-3'>
             <button
               type='button'
               onClick={clearFilters}

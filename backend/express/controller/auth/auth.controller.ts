@@ -1,18 +1,17 @@
 import { Request, Response } from "express";
-import { authService } from "@services/auth.services.js";
+import { AuthenticatedRequest } from "@middleware/auth.middleware.js";
 import { ApiResponse } from "@utils/ApiResponse.js";
 import { asyncController } from "@utils/asyncController.js";
 
 export class AuthController {
-  createOrGetUser = asyncController(
-    async (req: Request, res: Response) => {
-      const user = await authService.createOrGetUser(
-        req.body
-      );
+  getProfile = asyncController(
+    async (req: AuthenticatedRequest, res: Response) => {
 
       return ApiResponse.success(
         res,
-        user,
+        {
+          user: req.user,
+        },
         "User synced successfully"
       );
     }
