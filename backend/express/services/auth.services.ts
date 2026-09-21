@@ -1,38 +1,33 @@
 import { userRepository, UserRepository } from "@repositories/user.repository.js";
 import { BadRequestError } from "@utils/ApiError.js";
-
-interface AuthUserData {
-  id: string;
-  email: string;
-  name?: string | null;
-  image?: string | null;
-}
+import { AuthenticatedUser } from "@shared-types/auth.types.js";
 
 export class AuthService {
   constructor(
     private readonly users: UserRepository
   ) {}
 
-  async createOrGetUser(data: AuthUserData) {
-    if (!data.id || !data.email) {
-      throw new BadRequestError(
-        "User ID and email are required"
-      );
+  async getAuthenticatedUser(sessionToken: string): Promise<AuthenticatedUser | null> {
+    const session = await this.users.findSession(sessionToken);
+
+    if (!session) {
+      return null;
     }
 
-    const existingUser =
-      await this.users.findById(data.id);
-
-    if (existingUser) {
-      return existingUser;
+    if (session.expires <= new Date()) {
+      return null;
     }
 
-    return this.users.create({
-      id: data.id,
-      email: data.email,
-      name: data.name,
-      image: data.image,
-    });
+    return {
+      id: session.user.id,
+      email: session.user.email,
+      name: session.user.name,
+      image: session.user.image,
+    };
+  }
+
+  async logout(sessionToken: string): Promise<void> {
+    await this.users.deleteSession(sessionToken);
   }
 }
 
