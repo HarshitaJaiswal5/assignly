@@ -34,7 +34,9 @@ export default function Earn({
     subject: "All subjects",
     radius: 5,
     college: "",
-    location: ""
+    location: "",
+    startDate: null,
+    endDate: null
   })
 
   const ongoingGigs = useMemo(
