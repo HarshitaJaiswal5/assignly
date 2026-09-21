@@ -22,7 +22,7 @@ interface TrackGigsProps {
   onViewDetails?: (gig: TrackGig) => void;
 }
 
-export default function TrackGigs({
+export default function Earn({
   gigs,
   onViewDetails,
 }: TrackGigsProps) {
@@ -81,64 +81,11 @@ export default function TrackGigs({
         </div>
       </div>
 
-
         <GigFilters
         filters = { filters }
         onChange = { setFilters }
         onCurrentLocation = { handleCurrentLocation }
         />
-
-        {/* Summary */}
-        <div className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
-
-          <SummaryCard
-            icon={<Clock3 size={16} />}
-            label="Ongoing"
-            value={ongoingGigs.length}
-          />
-
-          <SummaryCard
-            icon={<History size={16} />}
-            label="Past"
-            value={pastGigs.length}
-          />
-
-          <SummaryCard
-            icon={<CheckCircle2 size={16} />}
-            label="Completed"
-            value={
-              gigs.filter(
-                (gig) => gig.status === "completed"
-              ).length
-            }
-          />
-
-          <SummaryCard
-            icon={<BriefcaseBusiness size={16} />}
-            label="Total gigs"
-            value={gigs.length}
-          />
-
-        </div>
-
-        {/* Tabs */}
-        <div className="mb-5 flex border-b border-[#e5e5e5]">
-
-          <TabButton
-            active={activeTab === "ongoing"}
-            onClick={() => setActiveTab("ongoing")}
-            label="Ongoing"
-            count={ongoingGigs.length}
-          />
-
-          <TabButton
-            active={activeTab === "past"}
-            onClick={() => setActiveTab("past")}
-            label="Past"
-            count={pastGigs.length}
-          />
-
-        </div>
 
         {/* Cards */}
         {visibleGigs.length > 0 ? (
