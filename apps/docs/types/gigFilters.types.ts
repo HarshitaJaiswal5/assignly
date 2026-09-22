@@ -1,12 +1,16 @@
+import { Location } from '@/types/location.types'; 
+
 export interface GigFilters {
   search: string;
   subject: string;
   radius: number;
   college: string;
-  location: string;
+  address: string;
+  coordinates: Location.Coordinates | null;
   startDate: Date | null;
   endDate: Date | null;
 }
+
 
 export interface GigFiltersProps {
   filters: GigFilters;

@@ -11,6 +11,12 @@ import {
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import type { GigFiltersProps } from '@/types/gigFilters.types';
+import { locationService } from '../../services/locationService';
+import { locationApiService } from '@/app/api/location/location.api';
+import {
+  reverseGeocodeMutation,
+  useLocationSuggestions,
+} from '../../hooks/location/useLocationSuggestions';
 
 const subjects = [
   'All subjects',
@@ -28,6 +34,11 @@ const radiusOptions = [
   { label: '10 km', value: 10 },
   { label: '25 km', value: 25 },
 ];
+
+const DEFAULT_COORDS = {
+  latitude: 22.7196,
+  longitude: 75.8577,
+};
 
 /* =========================================================
    THEME  (orange #F04E23 · peach #FFF3EA · peach border #F9D5C6)
@@ -47,42 +58,45 @@ const toolbarBtnActive = 'border-[#F9D5C6] bg-[#FFF3EA] text-[#F04E23]';
 const TOP_RATIO = 0.14; // modal rests 14% of the screen height from the top
 const SEARCH_TOP = 24; // px from the top of the screen while searching
 
-export function GigFilters({
-  filters,
-  onChange,
-  onCurrentLocation,
-  isGettingLocation = false,
-}: GigFiltersProps) {
+export function GigFilters({ filters, onChange }: GigFiltersProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchFocused, setSearchFocused] = useState(false);
   const [searchOffset, setSearchOffset] = useState(0);
   // top: where the modal rests. fromY: how far it sits from the bar when closed.
   const [anchor, setAnchor] = useState({ top: 120, fromY: 0 });
 
+  const [isGettingLocation, setIsGettingLocation] = useState(false);
+  const [addressInput, setAddressInput] = useState(filters.address);
+  const [debouncedAddress, setDebouncedAddress] = useState(filters.address);
+  
   const barRef = useRef<HTMLElement>(null); // the static bar (modal measures this)
   const searchRef = useRef<HTMLDivElement>(null); // only this travels
-
+  
+  const isGettingCurrentLocation = isGettingLocation || reverseGeocodeMutation.isPending;
+  const { data: locationSuggestions = [], isFetching: isLoadingSuggestions } =
+  useLocationSuggestions(debouncedAddress);
+  
   const updateFilter = <K extends keyof typeof filters>(
     key: K,
     value: (typeof filters)[K]
   ) => onChange({ ...filters, [key]: value });
-
+  
   /* ---------------- Search: only the search field travels ---------------- */
-
+  
   const handleSearchFocus = () => {
     const rect = searchRef.current?.getBoundingClientRect();
     // Only ever move UP
     if (rect) setSearchOffset(Math.min(0, SEARCH_TOP - rect.top));
     setSearchFocused(true);
   };
-
+  
   const handleSearchBlur = () => {
     setSearchFocused(false);
     setSearchOffset(0);
   };
-
+  
   /* ---------------- Modal ---------------- */
-
+  
   const open = () => {
     if (isOpen) return;
 
@@ -119,6 +133,13 @@ export function GigFilters({
     };
   }, [isOpen, searchFocused]);
 
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setDebouncedAddress(addressInput);
+    }, 500);
+
+    return () => clearTimeout(timeout);
+  }, [addressInput]);
   /* ---------------- Filters helpers ---------------- */
 
   const clearFilters = () =>
@@ -126,8 +147,9 @@ export function GigFilters({
       ...filters,
       subject: 'All subjects',
       radius: 25,
+      address: '',
       college: '',
-      location: '',
+      coordinates: DEFAULT_COORDS,
       startDate: null,
       endDate: null,
     });
@@ -164,10 +186,10 @@ export function GigFilters({
       label: filters.college,
       onRemove: () => removeFilter('college', ''),
     },
-    filters.location && {
-      key: 'location',
-      label: filters.location,
-      onRemove: () => removeFilter('location', ''),
+    filters.address && {
+      key: 'address',
+      label: filters.address,
+      onRemove: () => removeFilter('address', ''),
     },
     hasDate && {
       key: 'date',
@@ -186,6 +208,30 @@ export function GigFilters({
 
   const parseDate = (value: string) =>
     value ? new Date(`${value}T00:00:00`) : null;
+
+  const handleCurrentLocation = async () => {
+    try {
+      setIsGettingLocation(true);
+
+      const coordinates = await locationService.getCurrentCoordinates();
+      const response = await reverseGeocodeMutation.mutateAsync(coordinates);
+
+      onChange({
+        ...filters,
+        address: response.address,
+        coordinates: {
+          latitude: response.latitude,
+          longitude: response.longitude,
+        },
+      });
+
+      setAddressInput(response.address);
+    } catch (error) {
+      console.error('Failed to get current location:', error);
+    } finally {
+      setIsGettingLocation(false);
+    }
+  };
 
   return (
     <>
@@ -274,7 +320,10 @@ export function GigFilters({
                 activeFilters.length > 0 ? toolbarBtnActive : toolbarBtnIdle
               }`}
             >
-              <SlidersHorizontal className='h-4 w-4 text-[#F04E23]' strokeWidth={2.5} />
+              <SlidersHorizontal
+                className='h-4 w-4 text-[#F04E23]'
+                strokeWidth={2.5}
+              />
               <span className='hidden sm:inline'>Filters</span>
               {activeFilters.length > 0 && (
                 <span className='flex h-5 min-w-5 items-center justify-center rounded-full bg-[#F04E23] px-1.5 text-[11px] font-semibold text-white'>
@@ -412,20 +461,70 @@ export function GigFilters({
                   className='pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#F04E23]/70'
                 />
                 <input
-                  value={filters.location}
-                  onChange={(e) => updateFilter('location', e.target.value)}
+                  value={filters.address}
+                  onChange={(e) => {
+                    const value = e.target.value;
+
+                    setAddressInput(value);
+
+                    onChange({
+                      ...filters,
+                      address: value,
+                      coordinates: null,
+                    });
+                  }}
                   placeholder='City or area'
                   className={`${fieldClass} pl-9 pr-10`}
                 />
                 <button
                   type='button'
-                  onClick={onCurrentLocation}
+                  onClick={handleCurrentLocation}
                   disabled={isGettingLocation}
                   title='Use current location'
                   className='absolute right-1 top-1/2 -translate-y-1/2 rounded-md p-1.5 text-gray-500 transition hover:bg-[#FFF3EA] hover:text-[#F04E23] disabled:opacity-50'
                 >
                   <Navigation strokeWidth={2.5} className='h-4 w-4' />
                 </button>
+                {addressInput.trim().length >= 2 &&
+                  (locationSuggestions.length > 0 || isLoadingSuggestions) && (
+                    <div className='absolute left-0 right-0 top-full z-50 mt-1 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg'>
+                      {isLoadingSuggestions ? (
+                        <div className='px-3 py-3 text-sm text-gray-500'>
+                          Searching locations...
+                        </div>
+                      ) : (
+                        locationSuggestions.map((suggestion) => (
+                          <button
+                            key={`${suggestion.latitude}-${suggestion.longitude}`}
+                            type='button'
+                            onClick={() => {
+                              onChange({
+                                ...filters,
+                                address: suggestion.address,
+                                coordinates: {
+                                  latitude: suggestion.latitude,
+                                  longitude: suggestion.longitude,
+                                },
+                              });
+
+                              setAddressInput(suggestion.address);
+                              setDebouncedAddress('');
+                            }}
+                            className='flex w-full items-start gap-3 px-3 py-2.5 text-left text-sm transition hover:bg-[#FFF3EA]'
+                          >
+                            <MapPin
+                              className='mt-0.5 h-4 w-4 shrink-0 text-[#F04E23]'
+                              strokeWidth={2}
+                            />
+
+                            <span className='text-gray-700'>
+                              {suggestion.address}
+                            </span>
+                          </button>
+                        ))
+                      )}
+                    </div>
+                  )}
               </div>
             </div>
 
