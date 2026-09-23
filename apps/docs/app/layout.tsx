@@ -6,6 +6,7 @@ import { Geist, Geist_Mono, Rethink_Sans } from 'next/font/google';
 
 import '@repo/ui/globals.css';
 import Providers from '../providers/SessionProvider';
+import QueryProvider from '../providers/QueryClientProvider';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -40,11 +41,11 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className='min-h-full flex flex-col'>
-
         <Providers>
-          <main className='flex-1'>{children}</main>
+          <QueryProvider>
+            <main className='flex-1'>{children}</main>
+          </QueryProvider>
         </Providers>
-
       </body>
     </html>
   );

@@ -66,13 +66,14 @@ export function GigFilters({ filters, onChange }: GigFiltersProps) {
   const [anchor, setAnchor] = useState({ top: 120, fromY: 0 });
 
   const [isGettingLocation, setIsGettingLocation] = useState(false);
-  const [addressInput, setAddressInput] = useState(filters.address);
+  const [addressInput, setAddressInput] = useState(filters.address ?? '');
   const [debouncedAddress, setDebouncedAddress] = useState(filters.address);
   
   const barRef = useRef<HTMLElement>(null); // the static bar (modal measures this)
   const searchRef = useRef<HTMLDivElement>(null); // only this travels
   
-  const isGettingCurrentLocation = isGettingLocation || reverseGeocodeMutation.isPending;
+  const useRevMutation = reverseGeocodeMutation();
+  const isGettingCurrentLocation = isGettingLocation || useRevMutation.isPending;
   const { data: locationSuggestions = [], isFetching: isLoadingSuggestions } =
   useLocationSuggestions(debouncedAddress);
   
@@ -214,8 +215,8 @@ export function GigFilters({ filters, onChange }: GigFiltersProps) {
       setIsGettingLocation(true);
 
       const coordinates = await locationService.getCurrentCoordinates();
-      const response = await reverseGeocodeMutation.mutateAsync(coordinates);
-
+      const response = await useRevMutation.mutateAsync(coordinates);
+      
       onChange({
         ...filters,
         address: response.address,

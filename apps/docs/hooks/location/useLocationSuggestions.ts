@@ -2,14 +2,11 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { locationApiService } from '@/app/api/location/location.api';
 
-export const useLocationSuggestions = (
-  query: string
-) => {
+export const useLocationSuggestions = (query: string = '') => {
   return useQuery({
     queryKey: ['location-suggestions', query],
 
-    queryFn: () =>
-      locationApiService.getSuggestions(query),
+    queryFn: () => locationApiService.getSuggestions(query),
 
     enabled: query.trim().length >= 2,
 
@@ -21,9 +18,8 @@ export const useLocationSuggestions = (
   });
 };
 
-export const reverseGeocodeMutation = useMutation({
-  mutationFn:
-    locationApiService.reverseGeocode.bind(
-      locationApiService
-    ),
-});
+export const reverseGeocodeMutation = () => {
+  return useMutation({
+    mutationFn: locationApiService.reverseGeocode.bind(locationApiService),
+  });
+};
