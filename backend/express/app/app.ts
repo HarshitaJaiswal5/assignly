@@ -1,6 +1,7 @@
 import { corsOptions } from '@constants/cors.options.js';
 import { errorMiddleware } from '@middleware/error.middleware.js';
 import authRouter from '@routes/auth.routes.js';
+import locationRouter from '@routes/location.routes.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import crypto from 'crypto';
@@ -24,6 +25,8 @@ app.use(cors(corsOptions));
 app.get("/", (req, res) => {
   res.send("Server is working!");
 });
+
+app.use("/api/geolocation", locationRouter);
 
 // app.use("/api/auth", authRouter);
 
