@@ -30,7 +30,6 @@ export class LocationController {
 
   reverse = asyncController(
     async (req: Request, res: Response) => {
-      console.log(req.body + "------------")
       const { lat, lon } = req.query;
 
       const latitude = Number(lat);
@@ -55,8 +54,7 @@ export class LocationController {
       }
 
       const data = await reverseGeocode(latitude, longitude);
-
-      return ApiResponse.success(
+        return ApiResponse.success(
         res,
         data,
         "Location fetched successfully"

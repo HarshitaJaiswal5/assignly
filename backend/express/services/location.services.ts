@@ -1,5 +1,5 @@
-import axios from "axios";
-import { env } from "@config/env.js";
+import axios from 'axios';
+import { env } from '@config/env.js';
 
 const geoapify = axios.create({
   baseURL: env.GEOAPIFY_BASE_URL,
@@ -8,32 +8,38 @@ const geoapify = axios.create({
   },
 });
 
-export const autocompleteLocation = async (
-  text: string,
-  limit = 5,
-) => {
-  const response = await geoapify.get("/autocomplete", {
+export const autocompleteLocation = async (query: string) => {
+  const response = await geoapify.get('/autocomplete', {
     params: {
-      text,
-      limit,
-      filter: "countrycode:in",
+      text: query,
+      filter: 'countrycode:in',
     },
   });
 
-  return response.data;
+  return response.data.features.map((feature: any) => ({
+    name: feature.properties.name,
+    address: feature.properties.formatted,
+    latitude: feature.properties.lat,
+    longitude: feature.properties.lon,
+  }));
 };
 
-export const reverseGeocode = async (
-  lat: number,
-  lon: number,
-) => {
-  console.log(env.GEOAPIFY_BASE_URL);
-  const response = await geoapify.get("/reverse", {
+export const reverseGeocode = async (lat: number, lon: number) => {
+  const response = await geoapify.get('/reverse', {
     params: {
       lat,
       lon,
     },
   });
 
-  return response.data;
+  const feature = response.data.features[0];
+  if (!feature) {
+    throw new Error('Location not found');
+  }
+
+  return {
+    address: feature.properties.formatted,
+    latitude: feature.properties.lat,
+    longitude: feature.properties.lon,
+  };
 };
