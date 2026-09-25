@@ -33,8 +33,9 @@ export default function Earn({
     search: "",
     subject: "All subjects",
     radius: 5,
+    address: "",
+    coordinates: null,
     college: "",
-    location: "",
     startDate: null,
     endDate: null
   })

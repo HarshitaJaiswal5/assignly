@@ -7,14 +7,13 @@ export class LocationApiService {
   ): Promise<Location.UserLocation[]> {
     const response =
       await apiClient.get<Location.SuggestionsResponse>(
-        '/location/suggestions',
+        '/geolocation/suggestions',
         {
           params: {
-            q: query,
+            text: query,
           },
         }
       );
-
     return response.data;
   }
 
@@ -22,11 +21,16 @@ export class LocationApiService {
     coordinates: Location.ReverseGeocodeRequest
   ): Promise<Location.UserLocation> {
     const response =
-      await apiClient.post<Location.ReverseGeocodeResponse>(
-        '/location/reverse-geocode',
-        coordinates
+      await apiClient.get<Location.ReverseGeocodeResponse>(
+        '/geolocation/address',
+        {
+          params: {
+            lat: coordinates.latitude,
+            lon: coordinates.longitude
+          }
+        }
+        
       );
-
     return response.data;
   }
 }
