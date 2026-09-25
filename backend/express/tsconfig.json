@@ -9,6 +9,7 @@
       "@constants/*": ["./constants/*"],
       "@server/*": ["./server/*"],
       "@cluster/*": ["./clusterManager/*"],
+      "@config/*": ["./config/*"],
       "@api/*": ["./api/*"],
       "@controller/*": ["./controller/*"],
       "@middleware/*": ["./middleware/*"],

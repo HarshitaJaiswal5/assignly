@@ -10,7 +10,7 @@ import {
   X,
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import type { GigFiltersProps } from '@/types/gigFilters.types';
+import type { GigFilters, GigFiltersProps } from '@/types/gigFilters.types';
 import { locationService } from '../../services/locationService';
 import { locationApiService } from '@/app/api/location/location.api';
 import {
@@ -62,41 +62,53 @@ export function GigFilters({ filters, onChange }: GigFiltersProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchFocused, setSearchFocused] = useState(false);
   const [searchOffset, setSearchOffset] = useState(0);
+  const [isSelectingLocation, setIsSelectingLocation] = useState(false);
   // top: where the modal rests. fromY: how far it sits from the bar when closed.
   const [anchor, setAnchor] = useState({ top: 120, fromY: 0 });
 
   const [isGettingLocation, setIsGettingLocation] = useState(false);
-  const [addressInput, setAddressInput] = useState(filters.address);
+  const [addressInput, setAddressInput] = useState(filters.address ?? '');
   const [debouncedAddress, setDebouncedAddress] = useState(filters.address);
-  
+
   const barRef = useRef<HTMLElement>(null); // the static bar (modal measures this)
   const searchRef = useRef<HTMLDivElement>(null); // only this travels
-  
-  const isGettingCurrentLocation = isGettingLocation || reverseGeocodeMutation.isPending;
+
+  const useRevMutation = reverseGeocodeMutation();
+  const useLocMutation = useLocationSuggestions();
+
+  const isGettingCurrentLocation =
+    isGettingLocation || useRevMutation.isPending;
   const { data: locationSuggestions = [], isFetching: isLoadingSuggestions } =
-  useLocationSuggestions(debouncedAddress);
-  
-  const updateFilter = <K extends keyof typeof filters>(
+    useLocationSuggestions(debouncedAddress);
+
+  const updateFilter = <K extends keyof GigFilters>(
     key: K,
-    value: (typeof filters)[K]
-  ) => onChange({ ...filters, [key]: value });
-  
+    value: GigFilters[K]
+  ) => {
+    const updatedFilters = {
+      ...filters,
+      [key]: value,
+    };
+    onChange(updatedFilters);
+    console.log(updatedFilters);
+  };
+
   /* ---------------- Search: only the search field travels ---------------- */
-  
+
   const handleSearchFocus = () => {
     const rect = searchRef.current?.getBoundingClientRect();
     // Only ever move UP
     if (rect) setSearchOffset(Math.min(0, SEARCH_TOP - rect.top));
     setSearchFocused(true);
   };
-  
+
   const handleSearchBlur = () => {
     setSearchFocused(false);
     setSearchOffset(0);
   };
-  
+
   /* ---------------- Modal ---------------- */
-  
+
   const open = () => {
     if (isOpen) return;
 
@@ -134,12 +146,14 @@ export function GigFilters({ filters, onChange }: GigFiltersProps) {
   }, [isOpen, searchFocused]);
 
   useEffect(() => {
+    if (isSelectingLocation) return;
+
     const timeout = setTimeout(() => {
       setDebouncedAddress(addressInput);
     }, 500);
 
     return () => clearTimeout(timeout);
-  }, [addressInput]);
+  }, [addressInput, isSelectingLocation]);
   /* ---------------- Filters helpers ---------------- */
 
   const clearFilters = () =>
@@ -161,14 +175,24 @@ export function GigFilters({ filters, onChange }: GigFiltersProps) {
 
   const hasDate = Boolean(filters.startDate || filters.endDate);
 
+  const formatDate = (date: string | null) => {
+    if (!date) return '';
+
+    return new Date(`${date}T00:00:00`).toLocaleDateString('en-IN', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    });
+  };
+
   const dateLabel =
     filters.startDate && filters.endDate
-      ? `${filters.startDate} – ${filters.endDate}`
+      ? `${formatDate(filters.startDate)} – ${formatDate(filters.endDate)}`
       : filters.startDate
-        ? `From ${filters.startDate}`
+        ? `From ${formatDate(filters.startDate)}`
         : filters.endDate
-          ? `Until ${filters.endDate}`
-          : 'Any date';
+          ? `Until ${formatDate(filters.endDate)}`
+          : 'Select date';
 
   const activeFilters = [
     filters.subject !== 'All subjects' && {
@@ -198,23 +222,13 @@ export function GigFilters({ filters, onChange }: GigFiltersProps) {
     },
   ].filter(Boolean) as { key: string; label: string; onRemove: () => void }[];
 
-  const formatDate = (date: Date | null) => {
-    if (!date) return '';
-    const y = date.getFullYear();
-    const m = String(date.getMonth() + 1).padStart(2, '0');
-    const d = String(date.getDate()).padStart(2, '0');
-    return `${y}-${m}-${d}`;
-  };
-
-  const parseDate = (value: string) =>
-    value ? new Date(`${value}T00:00:00`) : null;
-
   const handleCurrentLocation = async () => {
     try {
+      setIsSelectingLocation(true);
       setIsGettingLocation(true);
 
       const coordinates = await locationService.getCurrentCoordinates();
-      const response = await reverseGeocodeMutation.mutateAsync(coordinates);
+      const response = await useRevMutation.mutateAsync(coordinates);
 
       onChange({
         ...filters,
@@ -226,6 +240,7 @@ export function GigFilters({ filters, onChange }: GigFiltersProps) {
       });
 
       setAddressInput(response.address);
+      setDebouncedAddress('');
     } catch (error) {
       console.error('Failed to get current location:', error);
     } finally {
@@ -297,7 +312,7 @@ export function GigFilters({ filters, onChange }: GigFiltersProps) {
               </div>
             </div>
 
-            <button
+            {/* <button
               type='button'
               onMouseDown={(e) => e.preventDefault()}
               onClick={open}
@@ -309,7 +324,7 @@ export function GigFilters({ filters, onChange }: GigFiltersProps) {
               <Calendar className='h-4 w-4 text-[#F04E23]' strokeWidth={2.5} />
               <span className='max-w-[130px] truncate'>{dateLabel}</span>
               <ChevronDown className='h-4 w-4' strokeWidth={2.5} />
-            </button>
+            </button> */}
 
             <button
               type='button'
@@ -404,20 +419,14 @@ export function GigFilters({ filters, onChange }: GigFiltersProps) {
             {/* Subject */}
             <div>
               <label className={labelClass}>Subject</label>
-              <div className='relative'>
-                <select
-                  value={filters.subject}
-                  onChange={(e) => updateFilter('subject', e.target.value)}
-                  className={selectClass}
-                >
-                  {subjects.map((s) => (
-                    <option key={s} value={s}>
-                      {s}
-                    </option>
-                  ))}
-                </select>
-                <ChevronDown className='pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#F04E23]/70' />
-              </div>
+
+              <input
+                type='text'
+                value={filters.subject ?? ''}
+                onChange={(e) => updateFilter('subject', e.target.value)}
+                placeholder='e.g. Data Structures'
+                className={fieldClass}
+              />
             </div>
 
             {/* Distance */}
@@ -461,10 +470,11 @@ export function GigFilters({ filters, onChange }: GigFiltersProps) {
                   className='pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#F04E23]/70'
                 />
                 <input
-                  value={filters.address}
+                  value={filters.address ?? ''}
                   onChange={(e) => {
                     const value = e.target.value;
 
+                    setIsSelectingLocation(false);
                     setAddressInput(value);
 
                     onChange({
@@ -485,7 +495,7 @@ export function GigFilters({ filters, onChange }: GigFiltersProps) {
                 >
                   <Navigation strokeWidth={2.5} className='h-4 w-4' />
                 </button>
-                {addressInput.trim().length >= 2 &&
+                {(addressInput || '').trim().length >= 2 &&
                   (locationSuggestions.length > 0 || isLoadingSuggestions) && (
                     <div className='absolute left-0 right-0 top-full z-50 mt-1 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg'>
                       {isLoadingSuggestions ? (
@@ -530,28 +540,38 @@ export function GigFilters({ filters, onChange }: GigFiltersProps) {
 
             {/* Date range */}
             <div className='sm:col-span-2'>
-              <label className={`${labelClass} flex items-center gap-1.5`}>
-                <Calendar className='h-3.5 w-3.5 text-[#F04E23]/70' />
-                Date range
-              </label>
               <div className='grid grid-cols-2 gap-2'>
-                <input
-                  type='date'
-                  value={formatDate(filters.startDate)}
-                  onChange={(e) =>
-                    updateFilter('startDate', parseDate(e.target.value))
-                  }
-                  className={fieldClass}
-                />
-                <input
-                  type='date'
-                  value={formatDate(filters.endDate)}
-                  min={formatDate(filters.startDate) || undefined}
-                  onChange={(e) =>
-                    updateFilter('endDate', parseDate(e.target.value))
-                  }
-                  className={fieldClass}
-                />
+                <div>
+                  <label className={`${labelClass} flex items-center gap-1.5`}>
+                    <Calendar className='h-3.5 w-3.5 text-[#F04E23]/70' />
+                    Start Date
+                  </label>
+                  <input
+                    type='date'
+                    value={filters.startDate ?? ''}
+                    onChange={(e) =>
+                      updateFilter('startDate', e.target.value || null)
+                    }
+                    className={fieldClass}
+                  />
+                </div>
+
+                <div>
+                  <label className={`${labelClass} flex items-center gap-1.5`}>
+                    <Calendar className='h-3.5 w-3.5 text-[#F04E23]/70' />
+                    End Date
+                  </label>
+
+                  <input
+                    type='date'
+                    value={filters.endDate ?? ''}
+                    min={filters.startDate || undefined}
+                    onChange={(e) =>
+                      updateFilter('endDate', e.target.value || null)
+                    }
+                    className={fieldClass}
+                  />
+                </div>
               </div>
             </div>
           </div>
