@@ -7,8 +7,8 @@ export interface GigFilters {
   college: string;
   address: string;
   coordinates: Location.Coordinates | null;
-  startDate: Date | null;
-  endDate: Date | null;
+  startDate: string | null;
+  endDate: string | null;
 }
 
 

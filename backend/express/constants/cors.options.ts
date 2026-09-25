@@ -1,10 +1,11 @@
+import { env } from '@config/env.js';
 
 export const corsOptions = {
   origin: (
     origin: string | undefined,
     callback: (err: Error | null, status: boolean) => void
   ) => {
-    if (origin === process.env.CLIENT_ORIGIN || !origin ) {
+    if (origin === env.CLIENT_ORIGIN || !origin ) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'), false);
