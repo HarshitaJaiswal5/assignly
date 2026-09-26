@@ -1,110 +1,107 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
-import {
-  BriefcaseBusiness,
-  CheckCircle2,
-  Clock3,
-  History,
-  SlidersHorizontal,
-} from "lucide-react";
-import type { TrackGig } from "@/types/trackGigs.types";
-import { TrackGigCard } from "@/components/TrackGigCard/TrackGigCard";
-import type { TrackTab } from "@/components/EmptyState/EmptyState";
-import { SummaryCard } from '@/components/SummaryCard/SummaryCard';
-import { TabButton } from "@/components/TabButton/TabButton";
-import { EmptyState } from "@/components/EmptyState/EmptyState";
-import type { GigFilters as GigFilterState } from "@/types/gigFilters.types";
+import { useState } from "react";
+import { SlidersHorizontal } from "lucide-react";
+
 import { GigFilters } from "@/components/GigFilters/GigFilters";
+import { TrackGigCard } from "@/components/TrackGigCard/TrackGigCard";
+import { EmptyState } from "@/components/EmptyState/EmptyState";
+import { useGigs } from "@/hooks/assignment/useAssignment";
 
-interface TrackGigsProps {
-  gigs: TrackGig[];
-  onViewDetails?: (gig: TrackGig) => void;
+import type { GigFilters as GigFiltersType } from "@/types/gigFilters.types";
+import type { Assignment } from "@/types/assignment.types";
+import { assignments } from "@/constants/tasks";
+
+const DEFAULT_FILTERS: GigFiltersType = {
+  search: "",
+  subject: "",
+  radius: 25,
+  college: "",
+  address: "",
+  coordinates: null,
+  startDate: null,
+  endDate: null,
+};
+
+export default function DashboardPage() {
+  const [filters, setFilters] =
+    useState<GigFiltersType>(DEFAULT_FILTERS);
+
+  const {
+    data: gigs = [],
+    isLoading,
+    isFetching,
+    error,
+  } = useGigs(filters);
+
+  const handleViewDetails = (assignment: Assignment.TrackAssignment) => {
+    console.log("View assignment:", assignment.id);
 }
-
-export default function Earn({
-  gigs,
-  onViewDetails,
-}: TrackGigsProps) {
-  const [activeTab, setActiveTab] =
-    useState<TrackTab>("ongoing");
-  
-  const [filters, setFilters] = useState<GigFilterState>({
-    search: "",
-    subject: "All subjects",
-    radius: 5,
-    address: "",
-    coordinates: null,
-    college: "",
-    startDate: null,
-    endDate: null
-  })
-
-  const ongoingGigs = useMemo(
-    () =>
-      gigs.filter(
-        (gig) =>
-          gig.status === "pending" ||
-          gig.status === "submitted"
-      ),
-    [gigs]
-  );
-
-  const pastGigs = useMemo(
-    () =>
-      gigs.filter(
-        (gig) =>
-          gig.status === "completed" ||
-          gig.status === "failed"
-      ),
-    [gigs]
-  );
-
-  const visibleGigs =
-    activeTab === "ongoing"
-      ? ongoingGigs
-      : pastGigs;
-
-  const handleCurrentLocation = () => {}
 
   return (
     <div className="min-h-full bg-[#fafafa] px-4 py-6 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-5xl">
-        <div className='mb-4 mx-2 flex items-center gap-5'>
-        <div className='flex h-8 w-8 items-center justify-center rounded-lg bg-[#f4eee9] text-[#c95740]'>
-          <SlidersHorizontal size={16} />
+
+        {/* Header */}
+        <div className="mb-4 mx-2 flex items-center gap-5">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#f4eee9] text-[#c95740]">
+            <SlidersHorizontal size={16} />
+          </div>
+
+          <div>
+            <h1 className="text-[20px] font-semibold tracking-[-0.5px] text-[#181818]">
+              Find Gigs
+            </h1>
+
+            <p className="text-[13px] text-[#777]">
+              Search and filter gigs near you
+            </p>
+          </div>
         </div>
 
-        <div className=''>
-          <h1 className='text-[20px] font-semibold tracking-[-0.5px] text-[#181818]'>
-            Find Gigs
-          </h1>
-
-          <p className="text-[13px] text-[#777]">Search and filter gigs near you</p>
-        </div>
-      </div>
-
+        {/* Filters */}
         <GigFilters
-        filters = { filters }
-        onChange = { setFilters }
-        onCurrentLocation = { handleCurrentLocation }
+          filters={filters}
+          onChange={setFilters}
         />
 
-        {/* Cards */}
-        {visibleGigs.length > 0 ? (
-          <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+        {/* Loading */}
+        {isLoading && (
+          <p className="mt-4 text-center text-sm text-[#777]">
+            Loading gigs...
+          </p>
+        )}
 
-            {visibleGigs.map((gig) => (
+        {/* Error */}
+        {error && (
+          <p className="mt-4 text-center text-sm text-red-500">
+            Failed to load gigs.
+          </p>
+        )}
+
+        {/* Fetching indicator for filter changes */}
+        {!isLoading && isFetching && (
+          <p className="mb-3 text-xs text-[#888]">
+            Updating gigs...
+          </p>
+        )}
+
+        {/* Gigs */}
+        {!isLoading && !error && gigs.length > 0 && (
+          <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+            {gigs.map((gig: Assignment.TrackAssignment) => (
               <TrackGigCard
                 key={gig.id}
-                gig={gig}
-                onViewDetails={onViewDetails}
+                Assignment={gig}
+                onViewDetails={handleViewDetails}
               />
             ))}
-
           </div>
-        ) : (
-          <EmptyState tab={activeTab} />
+        )}
+
+        {/* Empty state */}
+        {!isLoading && !error && gigs.length === 0 && (
+          <EmptyState />
         )}
 
       </div>

@@ -15,6 +15,5 @@ export interface GigFilters {
 export interface GigFiltersProps {
   filters: GigFilters;
   onChange: (filters: GigFilters) => void;
-  onCurrentLocation: () => void;
   isGettingLocation?: boolean;
 }

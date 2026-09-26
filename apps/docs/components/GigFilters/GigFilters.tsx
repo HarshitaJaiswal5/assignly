@@ -195,10 +195,10 @@ export function GigFilters({ filters, onChange }: GigFiltersProps) {
           : 'Select date';
 
   const activeFilters = [
-    filters.subject !== 'All subjects' && {
+    filters.subject && {
       key: 'subject',
       label: filters.subject,
-      onRemove: () => removeFilter('subject', 'All subjects'),
+      onRemove: () => removeFilter('subject', ''),
     },
     filters.radius !== 25 && {
       key: 'radius',

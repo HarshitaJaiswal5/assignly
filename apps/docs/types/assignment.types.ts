@@ -4,7 +4,7 @@ export namespace Assignment {
     | 'OPEN'
     | 'ASSIGNED'
     | 'COMPLETED'
-    | 'INPROGRESS'
+    | 'IN_PROGRESS'
     | 'SUBMITTED'
     | 'CANCELLED';
 
