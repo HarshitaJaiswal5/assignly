@@ -7,7 +7,7 @@ model Assignment {
     referencePDF   String?
     instructions   String?
 
-    subject  String
+    subject  String[] @default([])
     amount   Int
     postedBy String
     user     User   @relation(fields: [postedBy], references: [id], onDelete: Cascade)

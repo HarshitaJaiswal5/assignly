@@ -8,6 +8,7 @@
       "@/types/*": ["./types/*"],
       "@/constants/*": ["./constants/*"],
       "@/public/*": ["./public/*"],
+      "@/services/*": ["./services/*"],
       "@/lib/*": ["./lib/*"],
       "@repo/ui/*": ["../../packages/ui/src/components/*"]
     },
