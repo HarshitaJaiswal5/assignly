@@ -1,10 +1,10 @@
 import { apiClient } from '@/lib/api/ApiClient';
 import type { GigFilters } from '@/types/gigFilters.types';
-import type { Gig } from '@/types/assignment.types';
+import type { Assignment } from '@/types/assignment.types';
 
 class GigApiService {
-  public async getGigs(filters: GigFilters): Promise<Gig.Item[]> {
-    const response = await apiClient.get<Gig.Response>('/gigs', {
+  public async getGigs(filters: GigFilters): Promise<Assignment.TrackAssignment[]> {
+    const response = await apiClient.get<Assignment.Response>('/gigs', {
       params: {
         search: filters.search.trim() || undefined,
         subject: filters.subject.trim() || undefined,
