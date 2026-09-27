@@ -3,7 +3,7 @@ import { Location } from '@/types/location.types';
 export interface GigFilters {
   search: string;
   subject: string;
-  radius: number;
+  radius: number | null;
   college: string;
   address: string;
   coordinates: Location.Coordinates | null;
@@ -15,6 +15,5 @@ export interface GigFilters {
 export interface GigFiltersProps {
   filters: GigFilters;
   onChange: (filters: GigFilters) => void;
-  onCurrentLocation: () => void;
   isGettingLocation?: boolean;
 }

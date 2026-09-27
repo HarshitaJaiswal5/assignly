@@ -1,8 +1,6 @@
 import { z } from 'zod';
 
-const dateOnly = z
-  .string()
-  .regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format');
+const dateOnly = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format');
 
 export const gigFilterSchema = z
   .object({
@@ -26,9 +24,7 @@ export const gigFilterSchema = z
   )
   .refine(
     (data) =>
-      !data.startDate ||
-      !data.endDate ||
-      data.startDate <= data.endDate,
+      !data.startDate || !data.endDate || data.startDate <= data.endDate,
     {
       message: 'Start date cannot be after end date',
       path: ['startDate'],

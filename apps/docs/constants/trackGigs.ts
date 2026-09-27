@@ -1,15 +1,13 @@
-import type { TrackGig } from "@/types/trackGigs.types";
+import type { Assignment } from "@/types/assignment.types";
 
-export const trackGigs: TrackGig[] = [
+export const trackAssignments: Assignment.TrackAssignment[] = [
   {
-    id: 1,
-
+    id: "1",
     title: "Print and bind CS301 project report",
-
-    category: "Academic support",
-
     description:
       "Print the report, add a black spiral bind, and leave it at North Hall.",
+
+    category: "Academic support",
 
     requester: {
       name: "Nisha Kulkarni",
@@ -18,10 +16,9 @@ export const trackGigs: TrackGig[] = [
 
     payment: {
       amount: 450,
-      label: "total",
     },
 
-    due: {
+    delivery: {
       date: "Today",
       time: "6:00 PM",
     },
@@ -31,18 +28,20 @@ export const trackGigs: TrackGig[] = [
       distance: "0.8 km",
     },
 
-    status: "pending",
+    status: "OPEN",
+
+    subject: ["Computer Science"],
+
+    postedAt: "Today · 2:30 PM",
   },
 
   {
-    id: 2,
-
+    id: "2",
     title: "Prepare slides for marketing presentation",
-
-    category: "Presentation",
-
     description:
       "Create 10–12 slides for the marketing case study presentation.",
+
+    category: "Presentation",
 
     requester: {
       name: "Ananya Iyer",
@@ -51,10 +50,9 @@ export const trackGigs: TrackGig[] = [
 
     payment: {
       amount: 400,
-      label: "total",
     },
 
-    due: {
+    delivery: {
       date: "Today",
       time: "8:00 PM",
     },
@@ -64,20 +62,20 @@ export const trackGigs: TrackGig[] = [
       distance: "1.5 km",
     },
 
-    status: "submitted",
+    status: "SUBMITTED",
 
-    submittedAt: "Today · 5:10 PM",
+    subject: ["Marketing"],
+
+    postedAt: "Today · 1:15 PM",
   },
 
   {
-    id: 3,
-
+    id: "3",
     title: "Format PSY204 research references",
-
-    category: "Academic support",
-
     description:
       "Format the reference list in APA 7th edition for a PSY204 assignment.",
+
+    category: "Academic support",
 
     requester: {
       name: "Dr. Meera Sharma",
@@ -86,10 +84,9 @@ export const trackGigs: TrackGig[] = [
 
     payment: {
       amount: 250,
-      label: "total",
     },
 
-    due: {
+    delivery: {
       date: "Aug 15",
       time: "11:00 AM",
     },
@@ -99,20 +96,20 @@ export const trackGigs: TrackGig[] = [
       distance: "1.2 km",
     },
 
-    status: "completed",
+    status: "COMPLETED",
 
-    completedAt: "Aug 15 · 10:20 AM",
+    subject: ["Psychology"],
+
+    postedAt: "Aug 14 · 4:20 PM",
   },
 
   {
-    id: 4,
-
+    id: "4",
     title: "Create Excel sheet for ECO102 data",
-
-    category: "Data & Excel",
-
     description:
       "Organize the dataset in Excel with formulas and basic charts.",
+
+    category: "Data & Excel",
 
     requester: {
       name: "Rohan Deshpande",
@@ -121,10 +118,9 @@ export const trackGigs: TrackGig[] = [
 
     payment: {
       amount: 350,
-      label: "total",
     },
 
-    due: {
+    delivery: {
       date: "Aug 10",
       time: "5:00 PM",
     },
@@ -134,10 +130,10 @@ export const trackGigs: TrackGig[] = [
       distance: "1.0 km",
     },
 
-    status: "failed",
+    status: "CANCELLED",
 
-    failedAt: "Aug 10 · 5:30 PM",
+    subject: ["Economics", "Excel"],
 
-    failureReason: "Deadline missed",
+    postedAt: "Aug 9 · 11:30 AM",
   },
 ];

@@ -5,7 +5,10 @@
   "type": "module",
   "license": "ISC",
   "exports": {
-    ".": "./JS/src/index.js"
+  "./types": {
+    "types": "./JS/src/index.d.ts",
+    "import": "./JS/src/index.js"
+    }
   },
   "scripts": {
     "build": "tsc",

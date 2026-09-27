@@ -1,0 +1,39 @@
+model Assignment {
+    id String @id @default(uuid())
+
+    title          String
+    description    String
+    descriptionPDF String?
+    referencePDF   String?
+    instructions   String?
+
+    subject  String[] @default([])
+    amount   Int
+    postedBy String
+    user     User   @relation(fields: [postedBy], references: [id], onDelete: Cascade)
+
+    deliveryDate      DateTime
+    deliveryAddress   String
+    deliveryLatitude  Decimal
+    deliveryLongitude Decimal
+
+    additionalStationaryAmount Int?
+    additionalStationary       String?
+
+    status AssignmentStatus @default(OPEN)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([postedBy])
+    @@map("assignments")
+}
+
+enum AssignmentStatus {
+    OPEN
+    ASSIGNED
+    IN_PROGRESS
+    SUBMITTED
+    CANCELLED
+    COMPLETED
+}
