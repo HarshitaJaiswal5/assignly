@@ -1,1 +1,1 @@
-export * from '@src/gig.schema.js';
+export * from './gig.schema.js';
