@@ -4,7 +4,7 @@ import type { Assignment } from '@/types/assignment.types';
 
 class GigApiService {
   public async getGigs(filters: GigFilters): Promise<Assignment.TrackAssignment[]> {
-    const response = await apiClient.get<Assignment.Response>('/gigs', {
+    const response = await apiClient.get<Assignment.Response>('/assignment/get', {
       params: {
         search: filters.search.trim() || undefined,
         subject: filters.subject.trim() || undefined,

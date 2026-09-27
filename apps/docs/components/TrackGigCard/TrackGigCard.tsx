@@ -53,6 +53,7 @@ export function TrackGigCard({
   Assignment,
   onViewDetails,
 }: Assignment.TrackAssignmentCardProps) {
+  const deliveryDate = new Date(Assignment.deliveryDate);
   const status = statusConfig[Assignment.status];
 
   return (
@@ -64,35 +65,31 @@ export function TrackGigCard({
           <FileText size={20} />
         </div>
 
-        {/* Main */}
-        <div className='min-w-0 flex-1'>
-          <div className='flex items-start justify-between gap-3'>
-            <div className='min-w-0'>
-              {/* Category */}
-              <span className='text-[10px] font-medium text-[#888]'>
-                {Assignment.category}
-              </span>
+        {/* Content */}
+        <div className='flex min-w-0 flex-1 items-start justify-between gap-3'>
+          {/* Left: Category + Title + Description */}
+          <div className='min-w-0 flex-1'>
+            <span className='text-[10px] font-medium text-[#888]'>
+              {Assignment.category}
+            </span>
 
-              {/* Title */}
-              <h3 className='mt-1 text-[14px] font-semibold leading-5 text-[#202020]'>
-                {Assignment.title}
-              </h3>
-            </div>
+            <h3 className='mt-1 text-[14px] font-semibold leading-5 text-[#202020]'>
+              {Assignment.title}
+            </h3>
 
-            {/* Payment */}
-            <div className='shrink-0 rounded-lg bg-[#f4eee9] px-3 py-1.5 text-center'>
-              <p className='text-[13px] font-semibold text-[#222]'>
-                ₹{Assignment.payment.amount.toLocaleString('en-IN')}
-              </p>
-
-              <p className='text-[9px] text-[#777]'>{'Total'}</p>
-            </div>
+            <p className='mt-1 line-clamp-2 text-[11px] leading-4 text-[#777]'>
+              {Assignment.description}
+            </p>
           </div>
 
-          {/* Description */}
-          <p className='mt-2 text-[12px] leading-[18px] text-[#777]'>
-            {Assignment.description}
-          </p>
+          {/* Right: Payment */}
+          <div className='shrink-0 rounded-lg bg-[#f4eee9] px-3 py-1.5 text-center'>
+            <p className='text-[13px] font-semibold text-[#222]'>
+              ₹ {Assignment.amount}
+            </p>
+
+            <p className='text-[9px] text-[#777]'>Total</p>
+          </div>
         </div>
       </div>
 
@@ -103,7 +100,17 @@ export function TrackGigCard({
           <CalendarClock size={14} className='text-[#c95740]' />
 
           <span>
-            {Assignment.delivery.date} · {Assignment.delivery.time}
+            {deliveryDate.toLocaleDateString('en-IN', {
+              day: '2-digit',
+              month: 'short',
+              year: 'numeric',
+            })}{' '}
+            ·{' '}
+            {deliveryDate.toLocaleTimeString('en-IN', {
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: true,
+            })}
           </span>
         </div>
 
@@ -112,10 +119,12 @@ export function TrackGigCard({
           <MapPin size={14} className='text-[#777]' />
 
           <span>
-            {Assignment.location.name}
+            {Assignment.deliveryAddress}
 
-            {Assignment.location.distance && (
-              <> · {Assignment.location.distance}</>
+            {Assignment.distance !== undefined && (
+              <span className='ml-1 text-[#888]'>
+                · {Assignment.distance.toFixed(1)} km away
+              </span>
             )}
           </span>
         </div>
@@ -126,14 +135,14 @@ export function TrackGigCard({
         {/* Requester */}
         <div className='flex min-w-0 items-center gap-1.5'>
           <div className='flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#e7f1ef] text-[9px] font-semibold text-[#279b91]'>
-            {Assignment.requester.name.charAt(0)}
+            {Assignment.user?.name.charAt(0)}
           </div>
 
           <span className='truncate text-[11px] text-[#444]'>
-            {Assignment.requester.name}
+            {Assignment.user?.name}
           </span>
 
-          {Assignment.requester.verified && (
+          {Assignment.user?.emailVerified && (
             <BadgeCheck size={13} className='shrink-0 text-[#279b91]' />
           )}
         </div>
@@ -171,7 +180,6 @@ export function TrackGigCard({
           Assignment completed
         </div>
       )}
-      
     </article>
   );
 }

@@ -17,6 +17,7 @@ import {
   reverseGeocodeMutation,
   useLocationSuggestions,
 } from '../../hooks/location/useLocationSuggestions';
+import { Location } from '@/types/location.types';
 
 const subjects = [
   'All subjects',
@@ -68,7 +69,9 @@ export function GigFilters({ filters, onChange }: GigFiltersProps) {
 
   const [isGettingLocation, setIsGettingLocation] = useState(false);
   const [addressInput, setAddressInput] = useState(filters.address ?? '');
-  const [debouncedAddress, setDebouncedAddress] = useState(filters.address);
+  const [debouncedAddress, setDebouncedAddress] = useState(
+    filters.address ?? ''
+  );
 
   const barRef = useRef<HTMLElement>(null); // the static bar (modal measures this)
   const searchRef = useRef<HTMLDivElement>(null); // only this travels
@@ -200,10 +203,10 @@ export function GigFilters({ filters, onChange }: GigFiltersProps) {
       label: filters.subject,
       onRemove: () => removeFilter('subject', ''),
     },
-    filters.radius !== 25 && {
+    filters.radius !== null && {
       key: 'radius',
       label: `${filters.radius} km`,
-      onRemove: () => removeFilter('radius', 25),
+      onRemove: () => removeFilter('radius', null),
     },
     filters.college && {
       key: 'college',
@@ -246,6 +249,39 @@ export function GigFilters({ filters, onChange }: GigFiltersProps) {
     } finally {
       setIsGettingLocation(false);
     }
+  };
+
+  const handleAddressChange = (value: string) => {
+    setAddressInput(value);
+    onChange({
+      ...filters,
+      address: value,
+      coordinates: null,
+      radius: null,
+    });
+  };
+
+  const handleLocationSelect = (suggestion: Location.UserLocation) => {
+    onChange({
+      ...filters,
+      address: suggestion.address,
+      coordinates: {
+        latitude: suggestion.latitude,
+        longitude: suggestion.longitude,
+      },
+    });
+
+    setAddressInput(suggestion.address);
+    setDebouncedAddress('');
+  };
+
+  const handleClearLocation = () => {
+    onChange({
+      ...filters,
+      address: '',
+      coordinates: null,
+      radius: null,
+    });
   };
 
   return (
@@ -434,11 +470,13 @@ export function GigFilters({ filters, onChange }: GigFiltersProps) {
               <label className={labelClass}>Distance</label>
               <div className='relative'>
                 <select
-                  value={filters.radius}
-                  onChange={(e) =>
-                    updateFilter('radius', Number(e.target.value))
-                  }
+                  value={filters.radius ?? ''}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    updateFilter('radius', value ? Number(value) : null);
+                  }}
                   className={selectClass}
+                  disabled={!filters.coordinates}
                 >
                   {radiusOptions.map((o) => (
                     <option key={o.value} value={o.value}>
@@ -446,6 +484,11 @@ export function GigFilters({ filters, onChange }: GigFiltersProps) {
                     </option>
                   ))}
                 </select>
+                {!filters.coordinates && (
+                  <p className='mt-1.5 text-[11px] text-gray-400'>
+                    Select a location to filter gigs by distance.
+                  </p>
+                )}
                 <ChevronDown className='pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#F04E23]/70' />
               </div>
             </div>
@@ -486,15 +529,26 @@ export function GigFilters({ filters, onChange }: GigFiltersProps) {
                   placeholder='City or area'
                   className={`${fieldClass} pl-9 pr-10`}
                 />
-                <button
-                  type='button'
-                  onClick={handleCurrentLocation}
-                  disabled={isGettingLocation}
-                  title='Use current location'
-                  className='absolute right-1 top-1/2 -translate-y-1/2 rounded-md p-1.5 text-gray-500 transition hover:bg-[#FFF3EA] hover:text-[#F04E23] disabled:opacity-50'
-                >
-                  <Navigation strokeWidth={2.5} className='h-4 w-4' />
-                </button>
+                {addressInput ? (
+                  <button
+                    type='button'
+                    onClick={handleClearLocation}
+                    title='Clear location'
+                    className='absolute right-1 top-1/2 -translate-y-1/2 rounded-md p-1.5 text-gray-500 transition hover:bg-[#FFF3EA] hover:text-[#F04E23]'
+                  >
+                    <X className='h-4 w-4' />
+                  </button>
+                ) : (
+                  <button
+                    type='button'
+                    onClick={handleCurrentLocation}
+                    disabled={isGettingLocation}
+                    title='Use current location'
+                    className='absolute right-1 top-1/2 -translate-y-1/2 rounded-md p-1.5 text-gray-500 transition hover:bg-[#FFF3EA] hover:text-[#F04E23] disabled:opacity-50'
+                  >
+                    <Navigation strokeWidth={2.5} className='h-4 w-4' />
+                  </button>
+                )}
                 {(addressInput || '').trim().length >= 2 &&
                   (locationSuggestions.length > 0 || isLoadingSuggestions) && (
                     <div className='absolute left-0 right-0 top-full z-50 mt-1 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg'>

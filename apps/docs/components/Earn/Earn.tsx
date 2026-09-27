@@ -15,7 +15,7 @@ import { assignments } from "@/constants/tasks";
 const DEFAULT_FILTERS: GigFiltersType = {
   search: "",
   subject: "",
-  radius: 25,
+  radius: null,
   college: "",
   address: "",
   coordinates: null,

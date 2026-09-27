@@ -13,21 +13,14 @@ export namespace Assignment {
     title: string;
     description: string;
     category?: string;
-    requester: {
+    user: {
       name: string;
-      verified: boolean;
+      emailVerified: boolean;
     };
-    payment: {
-      amount: number;
-    };
-    delivery: {
-      date: string;
-      time: string;
-    };
-    location: {
-      name: string;
-      distance?: string;
-    };
+    amount: number;
+    distance?: number;
+    deliveryDate: string;
+    deliveryAddress: string;
     status: AssignmentStatus;
     subject: string[];
     postedAt: string;
