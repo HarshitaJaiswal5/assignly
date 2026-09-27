@@ -11,7 +11,6 @@ export const gigController = {
   getGigs: asyncController(async (req: Request, res: Response) => {
     const filters = gigFilterSchema.parse(req.query);
     const gigs = await getFilteredGigs(filters);
-    console.log(gigs);
     return ApiResponse.success(res, gigs, 'Gigs fetched successfully');
   }),
 };

@@ -8,11 +8,12 @@ import {
   autocompleteLocation,
   reverseGeocode,
 } from "@services/location.services.js";
+import { coordinatesSchema, locationSearchSchema } from "@repo/zod-validation/types";
 
 export class LocationController {
   autocomplete = asyncController(
     async (req: Request, res: Response) => {
-      const { text } = req.query;
+      const { text } = locationSearchSchema.parse(req.query) ;
 
       if (!text || typeof text !== "string") {
         throw new BadRequestError("Search text is required");
@@ -30,7 +31,7 @@ export class LocationController {
 
   reverse = asyncController(
     async (req: Request, res: Response) => {
-      const { lat, lon } = req.query;
+      const { lat, lon } = coordinatesSchema.parse(req.query);
 
       const latitude = Number(lat);
       const longitude = Number(lon);
