@@ -1,139 +1,91 @@
-import type { Assignment } from "@/types/assignment.types";
+import type { Assignment } from '@/types/assignment.types';
 
 export const trackAssignments: Assignment.TrackAssignment[] = [
   {
-    id: "1",
-    title: "Print and bind CS301 project report",
+    id: '1',
+    title: 'Print and bind CS301 project report',
     description:
-      "Print the report, add a black spiral bind, and leave it at North Hall.",
+      'Print the report, add a black spiral bind, and leave it at North Hall.',
+    category: 'Academic support',
 
-    category: "Academic support",
-
-    requester: {
-      name: "Nisha Kulkarni",
-      verified: true,
+    user: {
+      name: 'Nisha Kulkarni',
+      emailVerified: true,
     },
 
-    payment: {
-      amount: 450,
-    },
+    amount: 450,
+    distance: 0.8,
+    deliveryDate: '2026-09-29',
+    deliveryAddress: 'North Hall Print Desk',
 
-    delivery: {
-      date: "Today",
-      time: "6:00 PM",
-    },
-
-    location: {
-      name: "North Hall Print Desk",
-      distance: "0.8 km",
-    },
-
-    status: "OPEN",
-
-    subject: ["Computer Science"],
-
-    postedAt: "Today · 2:30 PM",
+    status: 'OPEN',
+    subject: ['Computer Science'],
+    postedAt: '2026-09-29T14:30:00',
   },
 
   {
-    id: "2",
-    title: "Prepare slides for marketing presentation",
+    id: '2',
+    title: 'Prepare slides for marketing presentation',
     description:
-      "Create 10–12 slides for the marketing case study presentation.",
+      'Create 10–12 slides for the marketing case study presentation.',
+    category: 'Presentation',
 
-    category: "Presentation",
-
-    requester: {
-      name: "Ananya Iyer",
-      verified: true,
+    user: {
+      name: 'Ananya Iyer',
+      emailVerified: true,
     },
 
-    payment: {
-      amount: 400,
-    },
+    amount: 400,
+    distance: 1.5,
+    deliveryDate: '2026-09-29',
+    deliveryAddress: 'Management Block',
 
-    delivery: {
-      date: "Today",
-      time: "8:00 PM",
-    },
-
-    location: {
-      name: "Management Block",
-      distance: "1.5 km",
-    },
-
-    status: "SUBMITTED",
-
-    subject: ["Marketing"],
-
-    postedAt: "Today · 1:15 PM",
+    status: 'SUBMITTED',
+    subject: ['Marketing'],
+    postedAt: '2026-09-29T13:15:00',
   },
 
   {
-    id: "3",
-    title: "Format PSY204 research references",
+    id: '3',
+    title: 'Format PSY204 research references',
     description:
-      "Format the reference list in APA 7th edition for a PSY204 assignment.",
+      'Format the reference list in APA 7th edition for a PSY204 assignment.',
+    category: 'Academic support',
 
-    category: "Academic support",
-
-    requester: {
-      name: "Dr. Meera Sharma",
-      verified: true,
+    user: {
+      name: 'Dr. Meera Sharma',
+      emailVerified: true,
     },
 
-    payment: {
-      amount: 250,
-    },
+    amount: 250,
+    distance: 1.2,
+    deliveryDate: '2026-08-15',
+    deliveryAddress: 'Central Library',
 
-    delivery: {
-      date: "Aug 15",
-      time: "11:00 AM",
-    },
-
-    location: {
-      name: "Central Library",
-      distance: "1.2 km",
-    },
-
-    status: "COMPLETED",
-
-    subject: ["Psychology"],
-
-    postedAt: "Aug 14 · 4:20 PM",
+    status: 'COMPLETED',
+    subject: ['Psychology'],
+    postedAt: '2026-08-14T16:20:00',
   },
 
   {
-    id: "4",
-    title: "Create Excel sheet for ECO102 data",
+    id: '4',
+    title: 'Create Excel sheet for ECO102 data',
     description:
-      "Organize the dataset in Excel with formulas and basic charts.",
+      'Organize the dataset in Excel with formulas and basic charts.',
+    category: 'Data & Excel',
 
-    category: "Data & Excel",
-
-    requester: {
-      name: "Rohan Deshpande",
-      verified: true,
+    user: {
+      name: 'Rohan Deshpande',
+      emailVerified: true,
     },
 
-    payment: {
-      amount: 350,
-    },
+    amount: 350,
+    distance: 1.0,
+    deliveryDate: '2026-08-10',
+    deliveryAddress: 'E Block',
 
-    delivery: {
-      date: "Aug 10",
-      time: "5:00 PM",
-    },
-
-    location: {
-      name: "E Block",
-      distance: "1.0 km",
-    },
-
-    status: "CANCELLED",
-
-    subject: ["Economics", "Excel"],
-
-    postedAt: "Aug 9 · 11:30 AM",
+    status: 'CANCELLED',
+    subject: ['Economics', 'Excel'],
+    postedAt: '2026-08-09T11:30:00',
   },
 ];
