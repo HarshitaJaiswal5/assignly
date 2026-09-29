@@ -57,7 +57,7 @@ const toolbarBtnIdle =
 const toolbarBtnActive = 'border-[#F9D5C6] bg-[#FFF3EA] text-[#F04E23]';
 
 const TOP_RATIO = 0.14; // modal rests 14% of the screen height from the top
-const SEARCH_TOP = 24; // px from the top of the screen while searching
+const SEARCH_TOP = 200; // px from the top of the screen while searching
 
 export function GigFilters({ filters, onChange }: GigFiltersProps) {
   const [isOpen, setIsOpen] = useState(false);

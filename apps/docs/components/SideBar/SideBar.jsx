@@ -1,122 +1,178 @@
-import { auth } from '@/lib/auth/auth';
+'use client';
 
+import React from 'react';
 import {
   Home,
   ClipboardList,
   User,
   FileText,
   CircleHelp,
-  CircleUserRound,
   Repeat2,
 } from 'lucide-react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
-const menuItems = [
+const navigation = [
   {
-    label: 'Make & Earn',
+    label: 'Dashboard',
     icon: Home,
     href: '/Dashboard',
   },
   {
-    label: 'Track Gigs & Submissions',
+    label: 'My Gigs',
     icon: ClipboardList,
-    href: '/submissions',
+    href: '/MyGigs',
   },
   {
-    label: 'My Profile',
-    icon: User,
-    href: '/profile',
-  },
-  {
-    label: 'My Assignments',
+    label: 'Applications',
     icon: FileText,
-    href: '/assignments',
+    href: '/Applications',
+  },
+  {
+    label: 'Profile',
+    icon: User,
+    href: '/Profile',
   },
 ];
 
-export default async function Sidebar() {
-  
-  const session = await auth();
+export default function Sidebar() {
+  const pathname = usePathname();
 
   return (
-    <aside className="fixed left-0 top-0 flex h-screen w-[280px] flex-col border-r border-gray-200 bg-white px-4 py-6">
+    <aside
+      className='
+        group
+        fixed
+        left-0
+        top-0
+        z-[60]
+        h-screen
+        w-[72px]
+        overflow-hidden
+        border-r
+        border-[#E8E1D5]
+        bg-white
+        shadow-sm
+        transition-[width]
+        duration-300
+        ease-in-out
+        hover:w-[260px]
+      '
+    >
       {/* Logo */}
-      <div className="mb-10 flex items-center gap-2 px-3">
-        <div className="flex h-8 w-8 items-center justify-center rounded-full">
-           <Repeat2
-            strokeWidth={4}
-            size={25}
-            color='#F45124'
-            absoluteStrokeWidth
-          />
+      <div className='flex h-18 items-center px-5'>
+        <div className='flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#F45124]'>
+          <Repeat2 size={24} strokeWidth={3} className='text-white' />
         </div>
 
-        <span className="text-xl font-bold tracking-tight text-[#152330]">
-          CampusLoop
+        <span
+          className='
+            ml-3
+            whitespace-nowrap
+            text-lg
+            font-bold
+            text-[#142235]
+            opacity-0
+            transition-opacity
+            duration-200
+            delay-75
+            group-hover:opacity-100
+          '
+        >
+          Campus Loop
         </span>
       </div>
 
       {/* Navigation */}
-      <nav className="space-y-2">
-        {menuItems.map((item, index) => {
+      <nav className='mt-6 px-3'>
+        {navigation.map((item) => {
           const Icon = item.icon;
-          const isActive = index === 0;
+
+          const isActive =
+            pathname === item.href || pathname.startsWith(`${item.href}/`);
 
           return (
-            <a
+            <Link
               key={item.label}
               href={item.href}
-              className={`group relative flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors ${
-                isActive
-                  ? 'bg-orange-50 text-orange-600'
-                  : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
-              }`}
-            >
-              {/* Active left indicator */}
-              {isActive && (
-                <span className="absolute left-0 top-0 h-full w-1 rounded-r-full bg-orange-500" />
-              )}
+              className={`
+                mb-2
+                flex
+                h-11
+                items-center
+                rounded-xl
+                px-3
+                transition-all
+                duration-200
 
-              <Icon
-                className={`h-[19px] w-[19px] ${
+                ${
                   isActive
-                    ? 'text-orange-600'
-                    : 'text-gray-500 group-hover:text-gray-700'
-                }`}
+                    ? 'bg-[#FFF3EA] text-[#F45124]'
+                    : 'text-[#5C6878] hover:bg-[#FFF3EA] hover:text-[#F45124]'
+                }
+              `}
+            >
+              <Icon
+                size={20}
+                strokeWidth={isActive ? 2.2 : 1.8}
+                className='shrink-0'
               />
 
-              <span>{item.label}</span>
-            </a>
+              <span
+                className='
+                  ml-4
+                  whitespace-nowrap
+                  text-sm
+                  font-medium
+                  opacity-0
+                  transition-opacity
+                  duration-200
+                  delay-75
+                  group-hover:opacity-100
+                '
+              >
+                {item.label}
+              </span>
+            </Link>
           );
         })}
       </nav>
 
-      {/* Bottom section */}
-      <div className="mt-auto">
-        {/* User */}
-        <div className="mb-8 flex items-center gap-3 px-3">
-          {/* <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-orange-600 text-sm font-semibold text-white">
-            AM
-          </div> */}
-
-          {/* <div className="min-w-0">
-            <p className="truncate text-sm font-semibold text-gray-900">
-              {session.user.name || "User"}
-            </p>
-
-            <p className="text-sm text-gray-500">
-              Student
-            </p>
-          </div> */}
-        </div>
-
-        {/* Help */}
-        <a
-          href="/help"
-          className="flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium text-orange-600 transition-colors hover:bg-orange-50"
+      {/* Help */}
+      <div className='absolute bottom-5 left-0 w-full px-3'>
+        <Link
+          href='/Help'
+          className='
+            flex
+            h-11
+            items-center
+            rounded-xl
+            px-3
+            text-[#5C6878]
+            transition-all
+            duration-200
+            hover:bg-[#FFF3EA]
+            hover:text-[#F45124]
+          '
         >
-          <CircleHelp className="h-5 w-5" />
-          <span>Need help?</span>
-        </a>
+          <CircleHelp size={20} strokeWidth={1.8} className='shrink-0' />
+
+          <span
+            className='
+              ml-4
+              whitespace-nowrap
+              text-sm
+              font-medium
+              opacity-0
+              transition-opacity
+              duration-200
+              delay-75
+              group-hover:opacity-100
+            '
+          >
+            Help & Support
+          </span>
+        </Link>
       </div>
     </aside>
   );
