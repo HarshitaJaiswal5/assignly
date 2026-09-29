@@ -10,7 +10,7 @@ export default async function PrivateLayout({
   children: React.ReactNode;
 }>) {
   const session = await auth();
-  
+
   if (!session) {
     redirect('/');
   }
@@ -18,10 +18,14 @@ export default async function PrivateLayout({
     <div className='min-h-screen bg-white'>
       <Sidebar />
 
-      <div className='ml-70 flex min-h-screen flex-col'>
+      {/* 
+        Collapsed sidebar width = 72px.
+        Main content permanently reserves only this much space.
+      */}
+      <div className='ml-[72px] min-h-screen'>
         <PrivateNavbar />
 
-        <main className='flex-1'>{children}</main>
+        <main className='pt-18'>{children}</main>
       </div>
     </div>
   );
