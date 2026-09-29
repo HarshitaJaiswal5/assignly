@@ -5,9 +5,9 @@
   "type": "module",
   "license": "ISC",
   "exports": {
-  "./types": {
-    "types": "./JS/src/index.d.ts",
-    "import": "./JS/src/index.js"
+    "./types": {
+      "types": "./src/index.ts",
+      "import": "./JS/src/index.js"
     }
   },
   "scripts": {
