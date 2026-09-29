@@ -161,12 +161,9 @@ importers:
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
-<<<<<<< Updated upstream
       '@repo/zod-validation':
         specifier: workspace:*
         version: link:../../packages/zod-validation
-=======
->>>>>>> Stashed changes
       axios:
         specifier: ^1.20.0
         version: 1.20.0

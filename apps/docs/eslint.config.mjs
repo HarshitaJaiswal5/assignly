@@ -38,4 +38,13 @@ export default [
       'no-nested-ternary': 'off',
     },
   },
+  {
+    files: [
+      'app/api/**/*.ts',
+      'services/**/*.ts',
+    ],
+    rules: {
+      'class-methods-use-this': 'off',
+    },
+  }
 ];
