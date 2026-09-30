@@ -1,9 +1,11 @@
 import type { GigFilterParams } from '@repo/zod-validation/types';
+import { assignmentRepository } from '@repositories/assignment.repository.js';
 
-import { getGigs } from '@repositories/assignment.repository.js';
-
-export const getFilteredGigs = async (
-  filters: GigFilterParams
-) => {
-  return getGigs(filters);
+export const gigServices = {
+  getFilteredGigs: async (filters: GigFilterParams) => {
+    return assignmentRepository.getGigs(filters);
+  },
+  getGigDetails: async (gigId: string) => {
+    return assignmentRepository.getGigDetails(gigId);
+  },
 };
