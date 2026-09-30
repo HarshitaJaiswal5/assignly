@@ -27,6 +27,13 @@ export class GigApiService {
 
     return response.data;
   }
+  public async getGigDetails(
+    gigId: string
+  ): Promise<Assignment.AssignmentDetails> {
+    const response = await apiClient.get<Assignment.DetailsResponse>(`/assignment/${gigId}/details`);
+
+    return response.data;
+  }
 }
 
 export const gigApiService = new GigApiService();

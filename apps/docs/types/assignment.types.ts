@@ -26,6 +26,12 @@ export namespace Assignment {
     postedAt: string;
   }
 
+ export interface AssignmentDetails extends TrackAssignment {
+    instructions: string;
+    referencePdf: string | null;
+    additionalStationaryAmount: number;
+  }
+
   export interface TrackAssignmentCardProps {
     Assignment: TrackAssignment;
     onViewDetails?: (Assignment: TrackAssignment) => void;
@@ -35,5 +41,11 @@ export namespace Assignment {
     success: boolean;
     message: string;
     data: TrackAssignment[];
+  }
+
+  export interface DetailsResponse {
+    success: boolean;
+    message: string;
+    data: AssignmentDetails;
   }
 }

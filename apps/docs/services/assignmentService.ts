@@ -8,6 +8,12 @@ export class GigService {
   ): Promise<Assignment.TrackAssignment[]> {
     return gigApiService.getGigs(filters);
   }
+
+  public async getGigDetails(
+    gigId: string
+  ): Promise<Assignment.AssignmentDetails> {
+    return gigApiService.getGigDetails(gigId);
+  }
 }
 
 export const gigService = new GigService();
