@@ -30,148 +30,178 @@ const calculateDistance = (
   return EARTH_RADIUS_KM * c;
 };
 
-export const getGigs = async (filters: GigFilterParams) => {
-  const {
-    search,
-    subject,
-    address,
-    radius,
-    lat,
-    lon,
-    startDate,
-    endDate,
-  } = filters;
-  
-  const where: Prisma.AssignmentWhereInput = {};
-
-  // Subject filter
-  if (subject) {
-    where.subject = {
-      has: subject,
-    };
-  }
-
-  // Search filter
-  if (search) {
-    where.OR = [
-      {
-        title: {
-          contains: search,
-          mode: 'insensitive',
-        },
-      },
-      {
-        description: {
-          contains: search,
-          mode: 'insensitive',
-        },
-      },
-      {
-        instructions: {
-          contains: search,
-          mode: 'insensitive',
-        },
-      },
-      {
-        deliveryAddress: {
-          contains: search,
-          mode: 'insensitive',
-        },
-      },
-    ];
-  }
-
-  // Date filter
-  if (startDate || endDate) {
-    where.deliveryDate = {
-      ...(startDate && {
-        gte: new Date(`${startDate}T00:00:00`),
-      }),
-      ...(endDate && {
-        lte: new Date(`${endDate}T00:00:00`),
-      }),
-    };
-  }
-
-  /*
-   * Location pre-filter.
-   *
-   * First use a bounding box to reduce the number
-   * of gigs for which we need to calculate distance.
-   */
-  if (
-    lat !== undefined &&
-    lon !== undefined &&
-    radius !== undefined
-  ) {
-    const latitudeDelta = radius / 111.32;
-
-    const longitudeDelta =
-      radius / (111.32 * Math.cos(toRadians(lat)));
-
-    const minLatitude = lat - latitudeDelta;
-    const maxLatitude = lat + latitudeDelta;
-
-    const minLongitude = lon - longitudeDelta;
-    const maxLongitude = lon + longitudeDelta;
-
-    where.deliveryLatitude = {
-      gte: minLatitude,
-      lte: maxLatitude,
-    };
-
-    where.deliveryLongitude = {
-      gte: minLongitude,
-      lte: maxLongitude,
-    };
-  }
-
-  const gigs = await prisma.assignment.findMany({
-    where,
-    orderBy: {
-      createdAt: 'desc',
-    },
-    include: {
-      user: {
-        select: {
-          name: true,
-          emailVerified : true
-        }
-      }
-    }
-  });
-
-  if (lat === undefined || lon === undefined) {
-    return gigs;
-  }
-
-  const gigsWithDistance = gigs.map((gig) => {
-    const gigLatitude = Number(gig.deliveryLatitude);
-    const gigLongitude = Number(gig.deliveryLongitude);
-
-    const distance = calculateDistance(
+export const assignmentRepository = {
+  getGigs: async (filters: GigFilterParams) => {
+    const {
+      search,
+      subject,
+      address,
+      radius,
       lat,
       lon,
-      gigLatitude,
-      gigLongitude
-    );
+      startDate,
+      endDate,
+    } = filters;
 
-    return {
-      ...gig,
-      distance,
+    const where: Prisma.AssignmentWhereInput = {
+      status: {
+        not: 'SUBMITTED',
+      },
     };
-  });
 
-  if (radius === undefined) {
+    // Subject filter
+    if (subject) {
+      where.subject = {
+        has: subject,
+      };
+    }
 
-    return gigsWithDistance.sort(
-      (a, b) => a.distance - b.distance
-    );
-  }
+    // Search filter
+    if (search) {
+      where.OR = [
+        {
+          title: {
+            contains: search,
+            mode: 'insensitive',
+          },
+        },
+        {
+          description: {
+            contains: search,
+            mode: 'insensitive',
+          },
+        },
+        {
+          instructions: {
+            contains: search,
+            mode: 'insensitive',
+          },
+        },
+        {
+          deliveryAddress: {
+            contains: search,
+            mode: 'insensitive',
+          },
+        },
+      ];
+    }
 
-  const filteredGigs = gigsWithDistance
-    .filter((gig) => gig.distance <= radius)
-    .sort((a, b) => a.distance - b.distance);
+    // Address filter
+    if (address) {
+      where.deliveryAddress = {
+        contains: address,
+        mode: 'insensitive',
+      };
+    }
 
-  return filteredGigs;
+    // Date filter
+    if (startDate || endDate) {
+      where.deliveryDate = {
+        ...(startDate && {
+          gte: new Date(`${startDate}T00:00:00`),
+        }),
+        ...(endDate && {
+          lte: new Date(`${endDate}T00:00:00`),
+        }),
+      };
+    }
+
+    /*
+     * Location pre-filter
+     *
+     * Use a bounding box first to reduce the number
+     * of gigs for which we need to calculate distance.
+     */
+    if (
+      lat !== undefined &&
+      lon !== undefined &&
+      radius !== undefined
+    ) {
+      const latitudeDelta = radius / 111.32;
+
+      const longitudeDelta =
+        radius / (111.32 * Math.cos(toRadians(lat)));
+
+      const minLatitude = lat - latitudeDelta;
+      const maxLatitude = lat + latitudeDelta;
+
+      const minLongitude = lon - longitudeDelta;
+      const maxLongitude = lon + longitudeDelta;
+
+      where.deliveryLatitude = {
+        gte: minLatitude,
+        lte: maxLatitude,
+      };
+
+      where.deliveryLongitude = {
+        gte: minLongitude,
+        lte: maxLongitude,
+      };
+    }
+
+    const gigs = await prisma.assignment.findMany({
+      where,
+      orderBy: {
+        createdAt: 'desc',
+      },
+      include: {
+        user: {
+          select: {
+            name: true,
+            emailVerified: true,
+          },
+        },
+      },
+    });
+
+    // No location → return normally
+    if (lat === undefined || lon === undefined) {
+      return gigs;
+    }
+
+    const gigsWithDistance = gigs.map((gig) => {
+      const gigLatitude = Number(gig.deliveryLatitude);
+      const gigLongitude = Number(gig.deliveryLongitude);
+
+      const distance = calculateDistance(
+        lat,
+        lon,
+        gigLatitude,
+        gigLongitude
+      );
+
+      return {
+        ...gig,
+        distance,
+      };
+    });
+
+    // Location provided but no radius → nearest first
+    if (radius === undefined) {
+      return gigsWithDistance.sort(
+        (a, b) => a.distance - b.distance
+      );
+    }
+
+    // Location + radius → filter and sort by distance
+    return gigsWithDistance
+      .filter((gig) => gig.distance <= radius)
+      .sort((a, b) => a.distance - b.distance);
+  },
+
+  getGigDetails: async (gigId: string) => {
+    return prisma.assignment.findUnique({
+      where: {
+        id: gigId,
+      },
+      include: {
+        user: {
+          select: {
+            name: true,
+            emailVerified: true,
+          },
+        },
+      },
+    });
+  },
 };
