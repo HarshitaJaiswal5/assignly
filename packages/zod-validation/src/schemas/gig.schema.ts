@@ -31,4 +31,9 @@ export const gigFilterSchema = z
     }
   );
 
+export const gigDetailsSchema = z.object({
+  id: z.string().trim().min(1),
+});
+
+export type GigDetailsSchema = z.infer<typeof gigDetailsSchema>;
 export type GigFilterParams = z.infer<typeof gigFilterSchema>;
