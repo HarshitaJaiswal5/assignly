@@ -1,40 +1,36 @@
-import {
-  NextFunction,
-  Request,
-  Response,
-} from "express";
+import type { NextFunction, Request, Response } from 'express';
 
-import { authService } from "@services/auth.services.js";
-import { AuthenticatedUser } from "@shared-types/auth.types.js";
+import {
+  AuthService,
+  type AuthenticatedUser,
+} from '@repo/auth-service/';
+
+import { UnauthorizedError } from '@utils/ApiError.js';
 
 export interface AuthenticatedRequest extends Request {
   user?: AuthenticatedUser;
 }
 
-export async function requireAuth(
+const authService = new AuthService();
+
+export const requireAuth = async (
   req: AuthenticatedRequest,
-  res: Response,
+  _res: Response,
   next: NextFunction,
-) {
+): Promise<void> => {
   try {
     const sessionToken =
-      req.cookies?.["authjs.session-token"] ??
-      req.cookies?.["__Secure-authjs.session-token"];
+      req.cookies?.['authjs.session-token'] ??
+      req.cookies?.['__Secure-authjs.session-token'];
 
     if (!sessionToken) {
-      return res.status(401).json({
-        message: "Authentication required",
-      });
+      throw new UnauthorizedError('Authentication required');
     }
 
-    const user = await authService.getAuthenticatedUser(
-      sessionToken,
-    );
+    const user = await authService.getAuthenticatedUser(sessionToken);
 
     if (!user) {
-      return res.status(401).json({
-        message: "Invalid or expired session",
-      });
+      throw new UnauthorizedError('Invalid or expired session');
     }
 
     req.user = user;
@@ -43,4 +39,4 @@ export async function requireAuth(
   } catch (error) {
     next(error);
   }
-}
+};
