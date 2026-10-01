@@ -1,2 +1,2 @@
 export { AuthService } from '@src/service/auth.services.js';
-export type { AuthenticatedUser } from '../types/auth.types.js';
+export type { AuthenticatedUser } from '@shared-types/auth.types.js';
