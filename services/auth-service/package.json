@@ -1,0 +1,16 @@
+{
+  "name": "@repo/auth-service",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./JS/src/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@repo/prisma": "workspace:*"
+  }
+}
