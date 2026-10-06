@@ -1,5 +1,5 @@
 import { prisma } from '@repo/prisma/db';
-import type { AuthenticatedUser } from '../../shared-types/auth.types.js';
+import type { AuthenticatedUser } from '@shared-types/auth.types.js';
 
 export class AuthService {
   public async getAuthenticatedUser(
@@ -10,7 +10,14 @@ export class AuthService {
         sessionToken,
       },
       include: {
-        user: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            image: true
+          }
+        },
       },
     });
 
