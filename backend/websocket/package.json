@@ -8,7 +8,8 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "start": "node JS/index.js"
+    "start": "node JS/index.js",
+    "check-types": "tsc --noEmit"
   },
   "dependencies": {
     "@repo/auth-service": "workspace:*",
