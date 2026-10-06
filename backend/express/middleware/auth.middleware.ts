@@ -3,7 +3,7 @@ import type { NextFunction, Request, Response } from 'express';
 import {
   AuthService,
   type AuthenticatedUser,
-} from '@repo/auth-service/';
+} from '@repo/auth-service';
 
 import { UnauthorizedError } from '@utils/ApiError.js';
 

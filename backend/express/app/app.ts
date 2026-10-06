@@ -29,8 +29,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/geolocation", locationRouter);
 app.use("/api/assignment", assignmentRouter);
-
-// app.use("/api/auth", authRouter);
+app.use("/api/auth", authRouter);
 
 // app.use(globalErrorHandler);
 

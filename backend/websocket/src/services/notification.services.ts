@@ -1,11 +1,11 @@
 import type { Server } from 'socket.io';
 
-import { WebSocketEvent } from '../events/EventTypes.js';
+import { WebSocketEvent } from '@src/events/events.types.js';
 
 import {
   gigApplicationReceivedSchema,
   gigApplicationRejectedSchema,
-} from '../validation/application.schema.js';
+} from '@repo/zod-validation/types';
 
 export class ApplicationNotificationService {
   constructor(

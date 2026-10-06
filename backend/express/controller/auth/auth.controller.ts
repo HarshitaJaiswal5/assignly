@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import { AuthenticatedRequest } from "@middleware/auth.middleware.js";
 import { ApiResponse } from "@utils/ApiResponse.js";
 import { asyncController } from "@utils/asyncController.js";

@@ -1,5 +1,5 @@
 import type { Server } from 'socket.io';
-import type { AuthenticatedSocket } from '../types/socket.types.js';
+import type { AuthenticatedSocket } from '@shared-types/socket.types.js';
 
 export class ConnectionHandler {
   constructor(
@@ -23,7 +23,7 @@ export class ConnectionHandler {
       `Socket connected: ${userId} (${socket.id})`,
     );
 
-    socket.on('disconnect', (reason) => {
+    socket.on('disconnect', (reason: string) => {
       console.log(
         `Socket disconnected: ${userId} (${reason})`,
       );
