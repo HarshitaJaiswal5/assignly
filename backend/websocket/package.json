@@ -11,7 +11,9 @@
     "start": "node JS/index.js"
   },
   "dependencies": {
+    "@repo/auth-service": "workspace:*",
     "@repo/zod-validation": "workspace:*",
+    "cookie": "^2.0.1",
     "dotenv": "^17.2.2",
     "express": "^5.2.1",
     "socket.io": "^4.8.4",
@@ -19,6 +21,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@types/cookie": "^1.0.0",
     "@types/express": "^5.0.6",
     "@types/node": "^22.0.0",
     "@types/ws": "^8.5.13",
