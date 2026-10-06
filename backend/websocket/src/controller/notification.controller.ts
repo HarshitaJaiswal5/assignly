@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 
-import { env } from '../config/env.js';
-import { ApplicationNotificationService } from '../services/ApplicationNotificationService.js';
+import { env } from '@config/env.js';
+import { ApplicationNotificationService } from '@src/services/notification.services.js';
 
 export class NotificationController {
   constructor(
