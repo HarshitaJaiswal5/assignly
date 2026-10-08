@@ -1,6 +1,6 @@
 import type { Server } from 'socket.io';
 
-import { WebSocketEvent } from '@src/events/events.types.js';
+import { WebSocketEvent } from '@wss/events/events.types.js';
 
 import {
   gigApplicationReceivedSchema,
@@ -12,27 +12,51 @@ export class ApplicationNotificationService {
     private readonly io: Server,
   ) {}
 
-  public notifyGigOwner(payload: unknown): void {
+  public notifyGigOwner(
+    payload: unknown,
+  ): void {
     const data =
       gigApplicationReceivedSchema.parse(payload);
 
+    const room = this.getUserRoom(
+      data.postedByUserId,
+    );
+
     this.io
-      .to(`user:${data.postedByUserId}`)
+      .to(room)
       .emit(
         WebSocketEvent.GIG_APPLICATION_RECEIVED,
         data,
       );
+
+    console.log(
+      `Application notification sent to ${room}`,
+    );
   }
 
-  public notifyApplicant(payload: unknown): void {
+  public notifyApplicant(
+    payload: unknown,
+  ): void {
     const data =
       gigApplicationRejectedSchema.parse(payload);
 
+    const room = this.getUserRoom(
+      data.applicantId,
+    );
+
     this.io
-      .to(`user:${data.applicantId}`)
+      .to(room)
       .emit(
         WebSocketEvent.GIG_APPLICATION_REJECTED,
         data,
       );
+
+    console.log(
+      `Rejection notification sent to ${room}`,
+    );
+  }
+
+  private getUserRoom(userId: string): string {
+    return `user:${userId}`;
   }
 }

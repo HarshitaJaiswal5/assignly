@@ -10,9 +10,6 @@ import type { Application, NextFunction, Request, Response } from 'express';
 import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import { catchAsync } from 'zodex-axon/core';
-import { BadRequest, globalErrorHandler } from 'zodex-axon/errors';
-import { OkResponseStrategy } from 'zodex-axon/responses';
 
 const app: Application = express();
 
@@ -30,8 +27,6 @@ app.get("/", (req, res) => {
 app.use("/api/geolocation", locationRouter);
 app.use("/api/assignment", assignmentRouter);
 app.use("/api/auth", authRouter);
-
-// app.use(globalErrorHandler);
 
 app.use(errorMiddleware);
 
