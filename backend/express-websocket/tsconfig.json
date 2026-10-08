@@ -21,7 +21,8 @@
       "@routes/*": ["./routes/*"],
       "@data/*": ["./data/*"],
       "@repositories/*": ["./repositories/*"],
-      "@services/*": ["./services/*"]
+      "@services/*": ["./services/*"],
+      "@wss/*": ["./websocket/*"]
     }
   },
   "include": ["**/*.ts"],

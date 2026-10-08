@@ -1,4 +1,4 @@
-import { WebSocketEvent } from '@src/events/events.types.js';
+import { WebSocketEvent } from '@wss/events/events.types.js';
 
 export const ApplicationEvents = {
   received: WebSocketEvent.GIG_APPLICATION_RECEIVED,
