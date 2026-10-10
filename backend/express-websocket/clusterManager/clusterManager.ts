@@ -1,5 +1,7 @@
-import cluster from 'cluster';
-import { availableParallelism } from 'os';
+
+import cluster from 'node:cluster';
+import { availableParallelism } from 'node:os';
+
 import { serverExpress } from '@server/server.js';
 
 const totalCPUs = availableParallelism();
@@ -9,27 +11,30 @@ if (cluster.isPrimary) {
     cluster.fork();
   }
 
-  cluster.on('exit', () => {
+  cluster.on('exit', (worker, code, signal) => {
+    console.error(
+      `Worker ${worker.process.pid} exited (code: ${code}, signal: ${signal})`,
+    );
+
     cluster.fork();
   });
 } else {
-  process.on('uncaughtException', (err) => {
-    console.error('Uncaught Exception:', err);
-    console.log('Shutting down the server due to uncaught exception...');
-    process.exit(1);
-  });
-
   const server = serverExpress();
 
-  process.on('unhandledRejection', (err) => {
-    console.error('Unhandled Rejection:', err);
-    if (server) {
-      server.close(() => {
-        console.log('Server closed due to unhandled rejection');
-        process.exit(1);
-      });
-    } else {
+  process.on('uncaughtException', (error) => {
+    console.error('Uncaught Exception:', error);
+    console.error('Shutting down worker...');
+
+    server.httpServer.close(() => {
       process.exit(1);
-    }
+    });
+  });
+
+  process.on('unhandledRejection', (error) => {
+    console.error('Unhandled Rejection:', error);
+
+    server.webSocketServer.getIO().close(() => {
+      process.exit(1);
+    });
   });
 }

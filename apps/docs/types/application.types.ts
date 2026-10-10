@@ -18,8 +18,7 @@ export namespace Application {
     data: null
   }
 
-  export interface ApplyAssignmentRequest {
+  export interface ApplyAssignmentRequest extends ApplyRequest {
     gigId: string;
-    negotiatedPrice: number;
   }
 }
