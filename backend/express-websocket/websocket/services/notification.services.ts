@@ -6,54 +6,27 @@ import {
   gigApplicationReceivedSchema,
   gigApplicationRejectedSchema,
 } from '@repo/zod-validation/types';
+import { GigApplicationReceivedPayload } from '../../shared-types/application.js';
 
 export class ApplicationNotificationService {
-  constructor(
-    private readonly io: Server,
-  ) {}
+  constructor(private readonly io: Server) {}
 
-  public notifyGigOwner(
-    payload: unknown,
-  ): void {
-    const data =
-      gigApplicationReceivedSchema.parse(payload);
-
-    const room = this.getUserRoom(
-      data.postedByUserId,
-    );
+  public notifyGigOwner(payload: GigApplicationReceivedPayload) {
+    const data = gigApplicationReceivedSchema.parse({
+      ...payload,
+      negotiatedPrice: Number(payload.negotiatedPrice),
+    });
 
     this.io
-      .to(room)
-      .emit(
-        WebSocketEvent.GIG_APPLICATION_RECEIVED,
-        data,
-      );
-
-    console.log(
-      `Application notification sent to ${room}`,
-    );
+      .to(`user:${data.postedByUserId}`)
+      .emit('GIG_APPLICATION_RECEIVED', data);
   }
-
-  public notifyApplicant(
-    payload: unknown,
-  ): void {
-    const data =
-      gigApplicationRejectedSchema.parse(payload);
-
-    const room = this.getUserRoom(
-      data.applicantId,
-    );
+  public notifyApplicant(payload: unknown): void {
+    const data = gigApplicationRejectedSchema.parse(payload);
 
     this.io
-      .to(room)
-      .emit(
-        WebSocketEvent.GIG_APPLICATION_REJECTED,
-        data,
-      );
-
-    console.log(
-      `Rejection notification sent to ${room}`,
-    );
+      .to(this.getUserRoom(data.applicantId))
+      .emit(WebSocketEvent.GIG_APPLICATION_REJECTED, data);
   }
 
   private getUserRoom(userId: string): string {
