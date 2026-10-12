@@ -1,17 +1,29 @@
+import type { Server } from 'socket.io';
+
 import type { AuthenticatedSocket } from '@shared-types/socket.types.js';
 
 export class ConnectionHandler {
-  public handleConnection(socket: AuthenticatedSocket): void {
+  constructor(
+    private readonly io: Server,
+  ) {}
+
+  public handleConnection(
+    socket: AuthenticatedSocket,
+  ): void {
     const userId = socket.userId;
-    const room = `user:${userId}`;
 
-    socket.join(room);
+    socket.join(this.getUserRoom(userId));
 
-    console.log('Socket user ID:', userId);
-    console.log('Joined room:', room);
+    console.log(`Socket connected: ${userId}`);
 
     socket.on('disconnect', (reason) => {
-      console.log(`Socket disconnected: ${userId} (${reason})`);
+      console.log(
+        `Socket disconnected: ${userId} (${reason})`,
+      );
     });
+  }
+
+  private getUserRoom(userId: string): string {
+    return `user:${userId}`;
   }
 }

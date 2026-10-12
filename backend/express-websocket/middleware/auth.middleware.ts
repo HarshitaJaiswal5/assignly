@@ -8,13 +8,13 @@ import {
 import { UnauthorizedError } from '@utils/ApiError.js';
 
 export interface AuthenticatedRequest extends Request {
-  user: AuthenticatedUser;
+  user?: AuthenticatedUser;
 }
 
 const authService = new AuthService();
 
 export const requireAuth = async (
-  req: Request,
+  req: AuthenticatedRequest,
   _res: Response,
   next: NextFunction,
 ): Promise<void> => {

@@ -10,7 +10,7 @@ model Assignment {
     subject  String[] @default([])
     amount   Int
     postedBy String
-    user     User     @relation(fields: [postedBy], references: [id], onDelete: Cascade)
+    user     User   @relation(fields: [postedBy], references: [id], onDelete: Cascade)
 
     deliveryDate      DateTime
     deliveryAddress   String
@@ -21,8 +21,6 @@ model Assignment {
     additionalStationary       String?
 
     status AssignmentStatus @default(OPEN)
-
-    application Application[]
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt

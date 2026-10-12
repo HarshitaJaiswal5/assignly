@@ -1,6 +1,5 @@
 import { corsOptions } from '@constants/cors.options.js';
 import { errorMiddleware } from '@middleware/error.middleware.js';
-import { applicationRouter } from '@routes/application.routes.js';
 import assignmentRouter from '@routes/assignment.routes.js';
 import authRouter from '@routes/auth.routes.js';
 import locationRouter from '@routes/location.routes.js';
@@ -27,7 +26,6 @@ app.get("/", (req, res) => {
 
 app.use("/api/geolocation", locationRouter);
 app.use("/api/assignment", assignmentRouter);
-app.use("/api/application", applicationRouter);
 app.use("/api/auth", authRouter);
 
 app.use(errorMiddleware);

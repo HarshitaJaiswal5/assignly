@@ -1,27 +1,25 @@
-
+import { app } from '@app/app.js';
+import { env } from '@config/env.js';
+import { WebSocketServer } from '@wss/server/server.js';
 import { createServer } from 'node:http';
 import { fileURLToPath } from 'node:url';
 
-import { app } from '@app/app.js';
-import { env } from '@config/env.js';
-import { applicationService } from '@services/application.services.js';
-import { WebSocketServer } from '@wss/server/server.js';
-
 export function serverExpress() {
-  const port = Number(env.HTTP_SERVER_PORT) || 8080;
+  const port = Number(env.HTTP_SERVER_PORT) || 6000;
 
   const httpServer = createServer(app);
-  const webSocketServer = new WebSocketServer(httpServer);
 
-  applicationService.setNotificationService(
-    webSocketServer.getNotificationService(),
-  );
+  const websocketserver = new WebSocketServer(httpServer);
 
   httpServer.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
   });
 
-  return { httpServer, webSocketServer };
+  setTimeout(() => {
+    websocketserver.testApplicationNotification('cmuwasmpi0000f4ullvv8f2ca');
+  }, 5000);
+
+  return httpServer;
 }
 
 const filename = fileURLToPath(import.meta.url);
