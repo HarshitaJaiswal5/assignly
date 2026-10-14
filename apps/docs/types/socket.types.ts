@@ -1,9 +1,9 @@
 export interface GigApplicationReceivedPayload {
   gigId: string;
   applicationId: string;
+  postedByUserId: string;
   applicantId: string;
   applicantName: string;
-  postedByUserId: string;
   negotiatedPrice: number;
 }
 
@@ -17,13 +17,15 @@ export interface GigApplicationRejectedPayload {
 }
 
 export interface ServerToClientEvents {
-  'gig:application-received': (
+  GIG_APPLICATION_RECEIVED: (
     payload: GigApplicationReceivedPayload,
   ) => void;
 
-  'gig:application-rejected': (
+  GIG_APPLICATION_REJECTED: (
     payload: GigApplicationRejectedPayload,
   ) => void;
 }
 
-export interface ClientToServerEvents {}
+export interface ClientToServerEvents {
+  // Add only client-to-server events the frontend actually emits.
+}

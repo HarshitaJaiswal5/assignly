@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Plus, ClipboardList } from "lucide-react";
 
 import type { MyAssignments } from "@/types/myAssignments.types";
@@ -16,16 +16,43 @@ import { ApplicantList } from "@/components/ApplicantList/ApplicantList";
 import { requestedAssignments } from "@/constants/myAssignments";
 import { postedAssignments } from "@/constants/postedAssignments";
 
+import { useApplicationEvents } from "@/hooks/application/useApplicationEvents";
+import { GigApplicationReceivedPayload, GigApplicationRejectedPayload } from "@/types/socket.types";
+
 export default function MyAssignmentsPage() {
   const [activeTab, setActiveTab] =
     useState<MyAssignments.AssignmentTab>("requested");
 
-  const [showUploadForm, setShowUploadForm] =
+    const [showUploadForm, setShowUploadForm] =
     useState(false);
-
-  const [selectedAssignment, setSelectedAssignment] =
+    
+    const [selectedAssignment, setSelectedAssignment] =
     useState<MyAssignments.PostedAssignment | null>(null);
-
+    
+    const handleApplicationReceived = useCallback(
+    (payload: GigApplicationReceivedPayload) => {
+      console.log("New application received:", payload);
+  
+      // TODO: Update the matching posted assignment's applicant list.
+      // Use the backend's actual payload and your Applicant type.
+    },
+    [],
+  );
+  
+  const handleApplicationRejected = useCallback(
+    (payload: GigApplicationRejectedPayload) => {
+      console.log("Application rejected:", payload);
+  
+      // TODO: Update the relevant application state if this page
+      // needs to reflect rejection events.
+    },
+    [],
+  );
+  
+  useApplicationEvents({
+    onApplicationReceived: handleApplicationReceived,
+    onApplicationRejected: handleApplicationRejected,
+  });
   // -----------------------------
   // Upload assignment
   // -----------------------------
@@ -60,6 +87,7 @@ export default function MyAssignmentsPage() {
     // Later:
     // API call to accept applicant
   };
+
 
   return (
     <div className="min-h-full bg-[#fafafa] px-4 py-5 sm:px-6 lg:px-8">

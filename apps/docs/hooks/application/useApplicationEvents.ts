@@ -1,19 +1,18 @@
-'use client';
+"use client";
 
-import { useEffect, useRef } from 'react';
-
-import { getSocket } from '@/lib/socket/socket-client';
-import { SocketEvent } from '@/lib/socket/socket-events';
-
+import { useEffect } from "react";
+import { useSocket } from "@/providers/SocketProvider";
+import { SOCKET_EVENTS } from "@/lib/socket/events";
 import type {
   GigApplicationReceivedPayload,
   GigApplicationRejectedPayload,
-} from '@/lib/socket/socket.types';
+} from "@/types/socket.types";
 
-interface ApplicationEventHandlers {
+interface UseApplicationEventsOptions {
   onApplicationReceived?: (
     payload: GigApplicationReceivedPayload,
   ) => void;
+
   onApplicationRejected?: (
     payload: GigApplicationRejectedPayload,
   ) => void;
@@ -22,50 +21,42 @@ interface ApplicationEventHandlers {
 export function useApplicationEvents({
   onApplicationReceived,
   onApplicationRejected,
-}: ApplicationEventHandlers = {}) {
-  const receivedRef = useRef(onApplicationReceived);
-  const rejectedRef = useRef(onApplicationRejected);
+}: UseApplicationEventsOptions = {}) {
+  const { socket, status } = useSocket();
 
   useEffect(() => {
-    receivedRef.current = onApplicationReceived;
-    rejectedRef.current = onApplicationRejected;
-  }, [onApplicationReceived, onApplicationRejected]);
+    if (!socket) return;
 
-  useEffect(() => {
-    const socket = getSocket();
+    if (onApplicationReceived) {
+      socket.on(
+        SOCKET_EVENTS.GIG_APPLICATION_RECEIVED,
+        onApplicationReceived,
+      );
+    }
 
-    const handleReceived = (
-      payload: GigApplicationReceivedPayload,
-    ) => {
-      receivedRef.current?.(payload);
-    };
-
-    const handleRejected = (
-      payload: GigApplicationRejectedPayload,
-    ) => {
-      rejectedRef.current?.(payload);
-    };
-
-    socket.on(
-      SocketEvent.GIG_APPLICATION_RECEIVED,
-      handleReceived,
-    );
-
-    socket.on(
-      SocketEvent.GIG_APPLICATION_REJECTED,
-      handleRejected,
-    );
+    if (onApplicationRejected) {
+      socket.on(
+        SOCKET_EVENTS.GIG_APPLICATION_REJECTED,
+        onApplicationRejected,
+      );
+    }
 
     return () => {
-      socket.off(
-        SocketEvent.GIG_APPLICATION_RECEIVED,
-        handleReceived,
-      );
+      if (onApplicationReceived) {
+        socket.off(
+          SOCKET_EVENTS.GIG_APPLICATION_RECEIVED,
+          onApplicationReceived,
+        );
+      }
 
-      socket.off(
-        SocketEvent.GIG_APPLICATION_REJECTED,
-        handleRejected,
-      );
+      if (onApplicationRejected) {
+        socket.off(
+          SOCKET_EVENTS.GIG_APPLICATION_REJECTED,
+          onApplicationRejected,
+        );
+      }
     };
-  }, []);
+  }, [socket, onApplicationReceived, onApplicationRejected]);
+
+  return { status };
 }

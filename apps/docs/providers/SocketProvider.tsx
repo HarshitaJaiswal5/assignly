@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   createContext,
@@ -6,71 +6,91 @@ import {
   useEffect,
   useState,
   type ReactNode,
-} from 'react';
-import { useSession } from 'next-auth/react';
+} from "react";
+import { useSession } from "next-auth/react";
 
-import { getSocket } from '@/lib/socket/socket-client';
+import {
+  createSocketClient,
+  type AppSocket,
+} from "@/lib/socket/client";
+
+type SocketStatus = "disconnected" | "connecting" | "connected";
 
 interface SocketContextValue {
-  isConnected: boolean;
+  socket: AppSocket | null;
+  status: SocketStatus;
 }
 
-const SocketContext = createContext<SocketContextValue>({
-  isConnected: false,
-});
+const SocketContext = createContext<SocketContextValue | undefined>(
+  undefined,
+);
 
-export function SocketProvider({
-  children,
-}: {
+interface SocketProviderProps {
   children: ReactNode;
-}) {
-  const { status } = useSession();
-  const [isConnected, setIsConnected] = useState(false);
+}
+
+export function SocketProvider({ children }: SocketProviderProps) {
+  const { status: sessionStatus } = useSession();
+
+  const [socket, setSocket] = useState<AppSocket | null>(null);
+  const [status, setStatus] = useState<SocketStatus>("disconnected");
 
   useEffect(() => {
-    if (status !== 'authenticated') {
-      setIsConnected(false);
+    if (sessionStatus !== "authenticated") {
+      setSocket(null);
+      setStatus("disconnected");
       return;
     }
 
-    const socket = getSocket();
+    const client = createSocketClient();
 
-    const handleConnect = () => {
-      setIsConnected(true);
-    };
+    function handleConnect() {
+      setStatus("connected");
+    }
 
-    const handleDisconnect = () => {
-      setIsConnected(false);
-    };
+    function handleDisconnect() {
+      setStatus("disconnected");
+    }
 
-    const handleConnectError = (error: Error) => {
-      setIsConnected(false);
-      console.error('Socket connection failed:', error.message);
-    };
+    function handleConnectError(error: Error) {
+      setStatus("disconnected");
+      console.error("Socket connection failed:", error.message);
+    }
 
-    socket.on('connect', handleConnect);
-    socket.on('disconnect', handleDisconnect);
-    socket.on('connect_error', handleConnectError);
+    setSocket(client);
+    setStatus("connecting");
 
-    socket.connect();
+    client.on("connect", handleConnect);
+    client.on("disconnect", handleDisconnect);
+    client.on("connect_error", handleConnectError);
+
+    client.connect();
 
     return () => {
-      socket.off('connect', handleConnect);
-      socket.off('disconnect', handleDisconnect);
-      socket.off('connect_error', handleConnectError);
+      client.off("connect", handleConnect);
+      client.off("disconnect", handleDisconnect);
+      client.off("connect_error", handleConnectError);
 
-      socket.disconnect();
-      setIsConnected(false);
+      client.disconnect();
+
+      setSocket(null);
+      setStatus("disconnected");
     };
-  }, [status]);
+  }, [sessionStatus]);
 
   return (
-    <SocketContext.Provider value={{ isConnected }}>
+    <SocketContext.Provider value={{ socket, status }}>
       {children}
     </SocketContext.Provider>
   );
 }
 
-export function useSocketStatus() {
-  return useContext(SocketContext);
+export function useSocket(): SocketContextValue {
+  const context = useContext(SocketContext);
+
+  if (!context) {
+    throw new Error("useSocket must be used within SocketProvider");
+  }
+
+  return context;
 }

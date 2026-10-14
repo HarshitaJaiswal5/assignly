@@ -1,7 +1,10 @@
-export { getSocket, disconnectSocket } from './socket-client';
-export { SocketEvent } from './socket-events';
-
+export { SOCKET_EVENTS } from '@/lib/socket/events';
+export {
+  createSocketClient,
+  disconnectSocket,
+  type AppSocket,
+} from "./client";
 export type {
   GigApplicationReceivedPayload,
   GigApplicationRejectedPayload,
-} from './socket.types';
+} from '@/types/socket.types';
