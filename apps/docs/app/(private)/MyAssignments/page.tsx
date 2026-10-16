@@ -35,7 +35,7 @@ export default function MyAssignmentsPage() {
 
   const selectedAssignment =
     postedAssignmentsState.find(
-      (assignment) => assignment._id === selectedAssignmentId,
+      (assignment) => assignment.id === selectedAssignmentId,
     ) ?? null;
 
   // Socket.IO: a new application was received.
@@ -89,7 +89,7 @@ export default function MyAssignmentsPage() {
   const handleReviewApplicants = (
     assignment: MyAssignments.PostedAssignment,
   ) => {
-    setSelectedAssignmentId(assignment._id);
+    setSelectedAssignmentId(assignment.id);
   };
 
   const handleAcceptApplicant = (
@@ -156,7 +156,7 @@ export default function MyAssignmentsPage() {
           <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
             {requestedAssignments.map((assignment) => (
               <RequestedAssignmentCard
-                key={assignment._id}
+                key={assignment.id}
                 assignment={assignment}
                 onViewDetails={(assignment) => {
                   console.log("View requested assignment", assignment);
@@ -179,7 +179,7 @@ export default function MyAssignmentsPage() {
           <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
             {postedAssignmentsState.map((assignment) => (
               <PostedAssignmentCard
-                key={assignment._id}
+                key={assignment.id}
                 assignment={assignment}
                 onReviewApplicants={handleReviewApplicants}
                 onViewDetails={(assignment) => {

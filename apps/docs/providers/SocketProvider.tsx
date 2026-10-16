@@ -54,7 +54,7 @@ export function SocketProvider({ children }: SocketProviderProps) {
 
     function handleConnectError(error: Error) {
       setStatus("disconnected");
-      console.error("Socket connection failed:", error.message);
+      console.log("Socket connection failed:", error.message);
     }
 
     setSocket(client);

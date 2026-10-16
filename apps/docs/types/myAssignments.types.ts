@@ -63,7 +63,7 @@ export namespace MyAssignments {
   // -----------------------------
 
   export interface PostedAssignment {
-    id: number;
+    id: string;
     title: string;
     category: string;
     description: string;
