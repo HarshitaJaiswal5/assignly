@@ -3,6 +3,7 @@ import type { GigFilters } from '@/types/gigFilters.types';
 import type { Assignment } from '@/types/assignment.types';
 
 export class GigApiService {
+
   public async getGigs(
     filters: GigFilters
   ): Promise<Assignment.TrackAssignment[]> {
@@ -27,6 +28,7 @@ export class GigApiService {
 
     return response.data;
   }
+  
   public async getGigDetails(
     gigId: string
   ): Promise<Assignment.AssignmentDetails> {

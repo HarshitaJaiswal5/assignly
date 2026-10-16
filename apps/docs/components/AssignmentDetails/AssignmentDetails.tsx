@@ -11,10 +11,12 @@ import {
   MapPin,
   Paperclip,
   UserRound,
+  X,
 } from 'lucide-react';
 
 import { useGigDetails } from '@/hooks/assignment/useAssignmentDetails';
-import type { Assignment } from '@/types/assignment.types';
+import { useState } from 'react';
+import { useApplyAssignment } from '@/hooks/assignment/useApplyAssignment';
 
 interface Attachment {
   name: string;
@@ -91,7 +93,12 @@ export default function AssignmentDetails({
   onInstructionsClick,
   onAttachmentClick,
 }: AssignmentDetailsProps) {
+  const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
+  const [negotiatedPrice, setNegotiatedPrice] = useState('');
+
   const { data: assignment, isLoading, isError } = useGigDetails(gigId);
+
+  const applyAssignment = useApplyAssignment.apply();
 
   if (isLoading) {
     return (
@@ -130,7 +137,24 @@ export default function AssignmentDetails({
       }
     : null;
 
-  const distance = formatDistance(assignment.distance);
+    const distance = formatDistance(assignment.distance);
+    const handleApply = (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      const price = Number(negotiatedPrice);
+
+      if (!price || price < 0) return;
+
+      applyAssignment.mutate({
+        gigId: assignment.id,
+        negotiatedPrice: price
+      },
+    {
+      onSuccess: () => {
+        setIsApplyModalOpen(false);
+        setNegotiatedPrice('');
+      },
+    })
+    }
 
   return (
     <div className='grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px]'>
@@ -408,6 +432,7 @@ export default function AssignmentDetails({
             {/* Apply */}
             <button
               type='button'
+              onClick={() => setIsApplyModalOpen(true)}
               className='mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-[#F45124] px-5 py-3.5 text-base font-semibold text-white transition hover:bg-[#DF431C] active:scale-[0.99]'
             >
               Apply for this assignment
@@ -417,6 +442,109 @@ export default function AssignmentDetails({
             <p className='mt-4 text-center text-xs text-gray-500'>
               You can withdraw your application before it's accepted.
             </p>
+            {isApplyModalOpen && (
+              <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4'>
+                <div className='w-full max-w-md rounded-2xl bg-white shadow-xl'>
+                  <form onSubmit={handleApply}>
+                    <div className='flex items-center justify-between border-b border-gray-200 px-6 py-5'>
+                      <div>
+                        <h2 className='text-lg font-semibold text-gray-900'>
+                          Apply for assignment
+                        </h2>
+
+                        <p className='mt-1 text-sm text-gray-500'>
+                          Enter the price you want to apply at.
+                        </p>
+                      </div>
+
+                      <button
+                        type='button'
+                        onClick={() => {
+                          setIsApplyModalOpen(false);
+                          setNegotiatedPrice('');
+                        }}
+                        className='rounded-full p-2 text-gray-500 hover:bg-gray-100'
+                      >
+                        <X size={20} />
+                      </button>
+                    </div>
+
+                    <div className='px-6 py-6'>
+                      <label
+                        htmlFor='negotiated-price'
+                        className='block text-sm font-medium text-gray-700'
+                      >
+                        Your negotiated price
+                      </label>
+
+                      <div className='relative mt-2'>
+                        <span className='absolute left-4 top-1/2 -translate-y-1/2 text-gray-500'>
+                          ₹
+                        </span>
+
+                        <input
+                          id='negotiated-price'
+                          name='negotiatedPrice'
+                          type='number'
+                          min='1'
+                          step='1'
+                          value={negotiatedPrice}
+                          onChange={(event) =>
+                            setNegotiatedPrice(event.target.value)
+                          }
+                          placeholder='Enter amount'
+                          required
+                          className='w-full rounded-xl border border-gray-300 py-3 pl-9 pr-4 outline-none focus:border-[#F45124] focus:ring-2 focus:ring-[#F45124]/10'
+                        />
+                      </div>
+
+                      <p className='mt-2 text-xs text-gray-500'>
+                        Listed amount: {formatCurrency(assignment.amount)}
+                      </p>
+
+                      {Number(negotiatedPrice) > 0 && (
+                        <div className='mt-5 rounded-xl bg-[#FFF5F0] p-4'>
+                          <p className='text-sm text-gray-700'>
+                            Are you sure you want to apply at{' '}
+                            <span className='font-semibold text-[#F45124]'>
+                              {formatCurrency(Number(negotiatedPrice))}
+                            </span>
+                            ?
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className='flex gap-3 border-t border-gray-200 px-6 py-4'>
+                      <button
+                        type='button'
+                        onClick={() => {
+                          setIsApplyModalOpen(false);
+                          setNegotiatedPrice('');
+                        }}
+                        className='flex-1 rounded-xl border border-gray-300 px-4 py-3 font-medium text-gray-700 hover:bg-gray-50'
+                      >
+                        No
+                      </button>
+
+                      <button
+                        type='submit'
+                        disabled={
+                          !negotiatedPrice ||
+                          Number(negotiatedPrice) <= 0 ||
+                          applyAssignment.isPending
+                        }
+                        className='flex-1 rounded-xl bg-[#F45124] px-4 py-3 font-semibold text-white hover:bg-[#DF431C] disabled:cursor-not-allowed disabled:opacity-50'
+                      >
+                        {applyAssignment.isPending
+                          ? 'Applying...'
+                          : 'Yes, apply'}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
           </div>
         </section>
       </aside>
