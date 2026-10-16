@@ -5,7 +5,7 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono, Rethink_Sans } from 'next/font/google';
 
 import '@repo/ui/globals.css';
-import Providers from '../providers/SessionProvider';
+import { Providers } from '../providers/SessionProvider';
 import QueryProvider from '../providers/QueryClientProvider';
 
 const geistSans = Geist({

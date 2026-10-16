@@ -8,6 +8,7 @@
       "@/types/*": ["./types/*"],
       "@/constants/*": ["./constants/*"],
       "@/public/*": ["./public/*"],
+      "@/providers/*": ["./providers/*"],
       "@/services/*": ["./services/*"],
       "@/hooks/*": ["./hooks/*"],
       "@/lib/*": ["./lib/*"],
