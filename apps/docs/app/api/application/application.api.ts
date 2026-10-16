@@ -6,7 +6,7 @@ export class ApplicationApiService {
     data: Application.ApplyAssignmentRequest,
   ): Promise<Application.ApplyResponse> {
     return apiClient.post<Application.ApplyResponse>(
-      `/assignment/${data.gigId}/apply`,
+      `/application/${data.gigId}/apply`,
       {
         negotiatedPrice: data.negotiatedPrice,
       },
