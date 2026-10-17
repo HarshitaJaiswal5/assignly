@@ -1,6 +1,7 @@
 import { apiClient } from '@/lib/api/ApiClient';
 import type { GigFilters } from '@/types/gigFilters.types';
 import type { Assignment } from '@/types/assignment.types';
+import { MyAssignments } from '@/types/myAssignments.types';
 
 export class GigApiService {
 
@@ -33,6 +34,22 @@ export class GigApiService {
     gigId: string
   ): Promise<Assignment.AssignmentDetails> {
     const response = await apiClient.get<Assignment.DetailsResponse>(`/assignment/${gigId}/details`);
+
+    return response.data;
+  }
+
+   public async getPostedAssignments(): Promise<MyAssignments.PostedAssignment[]> {
+    const response = await apiClient.get<MyAssignments.>(
+      '/assignment/my/posted'
+    );
+
+    return response.data;
+  }
+
+  public async getRequestedAssignments(): Promise<MyAssignments.RequestedAssignment[]> {
+    const response = await apiClient.get<Assignment.Response>(
+      '/assignment/my/requested'
+    );
 
     return response.data;
   }

@@ -1,11 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import { gigApiService } from '@/app/api/assignment/assignment.api';
+import type { GigFilters } from '@/types/gigFilters.types';
+import { gigService } from '@/services/assignmentService';
 
-export const useGigDetails = (gigId: string) => {
+export const useGigs = (filters: GigFilters) => {
   return useQuery({
-    queryKey: ['gig-details', gigId],
-    queryFn: () => gigApiService.getGigDetails(gigId),
-    enabled: Boolean(gigId),
-    staleTime: 0,
+    queryKey: ['gigs', filters],
+    queryFn: () => gigService.getGigs(filters),
+    staleTime: 30 * 1000,
   });
 };
+

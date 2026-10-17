@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import type { MyAssignments } from "@/types/myAssignments.types";
 import { ApplicantCard } from "@/components/ApplicantCard/ApplicantCard";
 
 interface ApplicantListProps {
   applicants: MyAssignments.Applicant[];
-  selectedApplicantId?: number;
+  selectedApplicantId?: string;
   onAcceptApplicant?: (applicant: MyAssignments.Applicant) => void;
 }
 
@@ -16,12 +16,16 @@ export function ApplicantList({
   selectedApplicantId,
   onAcceptApplicant,
 }: ApplicantListProps) {
-  const [selectedId, setSelectedId] = useState<number | undefined>(
-    selectedApplicantId
+  const [selectedId, setSelectedId] = useState<string | undefined>(
+    selectedApplicantId,
   );
 
+  useEffect(() => {
+    setSelectedId(selectedApplicantId);
+  }, [selectedApplicantId]);
+
   const handleAccept = (applicant: MyAssignments.Applicant) => {
-    setSelectedId(applicant.id);
+    setSelectedId(String(applicant.id));
     onAcceptApplicant?.(applicant);
   };
 
@@ -46,7 +50,7 @@ export function ApplicantList({
         <ApplicantCard
           key={applicant.id}
           applicant={applicant}
-          selected={selectedId === applicant.id}
+          selected={selectedId === String(applicant.id)}
           disabled={selectedId !== undefined}
           onAccept={handleAccept}
         />

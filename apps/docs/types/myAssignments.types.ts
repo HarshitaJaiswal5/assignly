@@ -27,7 +27,7 @@ export namespace MyAssignments {
   // -----------------------------
 
   export interface RequestedAssignment {
-    id: number;
+    id: string;
     title: string;
     category: string;
     description: string;
