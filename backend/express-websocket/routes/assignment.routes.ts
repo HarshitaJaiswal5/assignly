@@ -7,5 +7,7 @@ const assignmentRouter = Router();
 assignmentRouter.use('/', requireAuth);
 assignmentRouter.get('/get', gigController.getGigs);
 assignmentRouter.get('/:id/details', gigController.getGigDetails);
+assignmentRouter.get("/my/posted", gigController.getPostedAssignments);
+assignmentRouter.get("/my/requested", gigController.getRequestedAssignments);
 
 export default assignmentRouter;

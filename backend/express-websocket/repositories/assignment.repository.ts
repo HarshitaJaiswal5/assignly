@@ -1,5 +1,6 @@
 import { Prisma, prisma } from '@repo/prisma/db';
 import type { GigFilterParams } from '@repo/zod-validation/types';
+import { ApplicationRecord, AssignmentRecord } from '../shared-types/assignment.js';
 
 const EARTH_RADIUS_KM = 6371;
 
@@ -21,9 +22,7 @@ const calculateDistance = (
 
   const a =
     Math.sin(deltaLatitude / 2) ** 2 +
-    Math.cos(lat1) *
-      Math.cos(lat2) *
-      Math.sin(deltaLongitude / 2) ** 2;
+    Math.cos(lat1) * Math.cos(lat2) * Math.sin(deltaLongitude / 2) ** 2;
 
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
@@ -32,16 +31,8 @@ const calculateDistance = (
 
 export const assignmentRepository = {
   getGigs: async (filters: GigFilterParams) => {
-    const {
-      search,
-      subject,
-      address,
-      radius,
-      lat,
-      lon,
-      startDate,
-      endDate,
-    } = filters;
+    const { search, subject, address, radius, lat, lon, startDate, endDate } =
+      filters;
 
     const where: Prisma.AssignmentWhereInput = {
       status: {
@@ -112,15 +103,10 @@ export const assignmentRepository = {
      * Use a bounding box first to reduce the number
      * of gigs for which we need to calculate distance.
      */
-    if (
-      lat !== undefined &&
-      lon !== undefined &&
-      radius !== undefined
-    ) {
+    if (lat !== undefined && lon !== undefined && radius !== undefined) {
       const latitudeDelta = radius / 111.32;
 
-      const longitudeDelta =
-        radius / (111.32 * Math.cos(toRadians(lat)));
+      const longitudeDelta = radius / (111.32 * Math.cos(toRadians(lat)));
 
       const minLatitude = lat - latitudeDelta;
       const maxLatitude = lat + latitudeDelta;
@@ -163,12 +149,7 @@ export const assignmentRepository = {
       const gigLatitude = Number(gig.deliveryLatitude);
       const gigLongitude = Number(gig.deliveryLongitude);
 
-      const distance = calculateDistance(
-        lat,
-        lon,
-        gigLatitude,
-        gigLongitude
-      );
+      const distance = calculateDistance(lat, lon, gigLatitude, gigLongitude);
 
       return {
         ...gig,
@@ -178,9 +159,7 @@ export const assignmentRepository = {
 
     // Location provided but no radius → nearest first
     if (radius === undefined) {
-      return gigsWithDistance.sort(
-        (a, b) => a.distance - b.distance
-      );
+      return gigsWithDistance.sort((a, b) => a.distance - b.distance);
     }
 
     // Location + radius → filter and sort by distance
@@ -201,6 +180,38 @@ export const assignmentRepository = {
             emailVerified: true,
           },
         },
+      },
+    });
+  },
+
+  getAssignmentsByUserId: async (
+    userId: string
+  ): Promise<AssignmentRecord[]> => {
+    return prisma.assignment.findMany({
+      where: { id : userId },
+      orderBy: { createdAt: 'desc' },
+    });
+  },
+
+  getApplicationsByApplicantId: async (
+    applicantId: string
+  ): Promise<ApplicationRecord[]> => {
+    return prisma.application.findMany({
+      where: { applicantId },
+      orderBy: { createdAt: 'desc' },
+    });
+  },
+
+  getAssignmentsByIds: async (
+    assignmentIds: string[]
+  ): Promise<AssignmentRecord[]> => {
+    if (assignmentIds.length === 0) {
+      return [];
+    }
+
+    return prisma.assignment.findMany({
+      where: {
+        id: { in: assignmentIds },
       },
     });
   },

@@ -19,5 +19,35 @@ export const gigController = {
       gig,
       'Gig fetched successfully'
     );
-  })
+  }),
+
+    getPostedAssignments: asyncController(
+    async (req: Request, res: Response) => {
+      const userId = req.user.id;
+
+      const assignments =
+        await gigServices.getPostedAssignments(userId);
+
+      return ApiResponse.success(
+        res,
+        assignments,
+        'Posted assignments fetched successfully',
+      );
+    },
+  ),
+
+  getRequestedAssignments: asyncController(
+    async (req: Request, res: Response) => {
+      const userId = req.user.id;
+
+      const assignments =
+        await gigServices.getRequestedAssignments(userId);
+
+      return ApiResponse.success(
+        res,
+        assignments,
+        'Requested assignments fetched successfully',
+      );
+    },
+  ),
 };
