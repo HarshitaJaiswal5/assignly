@@ -39,7 +39,7 @@ export class GigApiService {
   }
 
    public async getPostedAssignments(): Promise<MyAssignments.PostedAssignment[]> {
-    const response = await apiClient.get<MyAssignments.>(
+    const response = await apiClient.get<MyAssignments.PostedAssignmentResponse>(
       '/assignment/my/posted'
     );
 
@@ -47,7 +47,7 @@ export class GigApiService {
   }
 
   public async getRequestedAssignments(): Promise<MyAssignments.RequestedAssignment[]> {
-    const response = await apiClient.get<Assignment.Response>(
+    const response = await apiClient.get<MyAssignments.RequestAssignmentResponse>(
       '/assignment/my/requested'
     );
 

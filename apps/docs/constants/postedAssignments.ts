@@ -2,7 +2,7 @@ import type { MyAssignments } from "@/types/myAssignments.types";
 
 export const postedAssignments: MyAssignments.PostedAssignment[] = [
   {
-    id: 201,
+    id: "201",
 
     title: "Create Excel sheet for ECO102 data",
 
@@ -53,7 +53,7 @@ export const postedAssignments: MyAssignments.PostedAssignment[] = [
   },
 
   {
-    id: 202,
+    id: "202",
 
     title: "Prepare marketing presentation",
 

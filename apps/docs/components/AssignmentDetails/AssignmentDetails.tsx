@@ -14,7 +14,7 @@ import {
   X,
 } from 'lucide-react';
 
-import { useGigDetails } from '@/hooks/assignment/useAssignmentDetails';
+import { useGigDetails } from '@/hooks/assignment/useAssignment';
 import { useState } from 'react';
 import { useApplyAssignment } from '@/hooks/assignment/useApplyAssignment';
 

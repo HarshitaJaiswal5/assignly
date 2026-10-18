@@ -10,6 +10,15 @@ export const useGigs = (filters: GigFilters) => {
   });
 };
 
+export const useGigDetails = (gigId: string) => {
+  return useQuery({
+    queryKey: ['gig-details', gigId],
+    queryFn: () => gigService.getGigDetails(gigId),
+    enabled: Boolean(gigId),
+    staleTime: 0,
+  });
+};
+
 export const usePostedAssignments = () => {
   return useQuery({
     queryKey: ['my-assignments', 'posted'],

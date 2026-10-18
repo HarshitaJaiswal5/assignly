@@ -145,4 +145,16 @@ export namespace MyAssignments {
 
     onAccept?: (applicant: Applicant) => void;
   }
+
+  export interface RequestAssignmentResponse {
+    success: boolean;
+    message: string;
+    data: RequestedAssignment[];
+  }
+
+  export interface PostedAssignmentResponse {
+    success: boolean;
+    message: string;
+    data: PostedAssignment[];
+  }
 }
