@@ -1,6 +1,7 @@
 import type { GigFilters } from '@/types/gigFilters.types';
 import type { Assignment } from '@/types/assignment.types';
 import { gigApiService } from '@/app/api/assignment/assignment.api';
+import { MyAssignments } from '@/types/myAssignments.types';
 
 export class GigService {
   public async getGigs(
@@ -13,6 +14,14 @@ export class GigService {
     gigId: string
   ): Promise<Assignment.AssignmentDetails> {
     return gigApiService.getGigDetails(gigId);
+  }
+
+  public async getPostedAssignments(): Promise<MyAssignments.PostedAssignment[]> {
+    return gigApiService.getPostedAssignments();
+  }
+
+  public async getRequestedAssignments(): Promise<MyAssignments.RequestedAssignment[]> {
+    return gigApiService.getRequestedAssignments();
   }
 }
 

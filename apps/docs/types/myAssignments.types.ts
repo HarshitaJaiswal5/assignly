@@ -27,7 +27,7 @@ export namespace MyAssignments {
   // -----------------------------
 
   export interface RequestedAssignment {
-    id: number;
+    id: string;
     title: string;
     category: string;
     description: string;
@@ -144,5 +144,17 @@ export namespace MyAssignments {
     disabled?: boolean;
 
     onAccept?: (applicant: Applicant) => void;
+  }
+
+  export interface RequestAssignmentResponse {
+    success: boolean;
+    message: string;
+    data: RequestedAssignment[];
+  }
+
+  export interface PostedAssignmentResponse {
+    success: boolean;
+    message: string;
+    data: PostedAssignment[];
   }
 }

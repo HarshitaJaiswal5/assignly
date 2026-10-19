@@ -2,7 +2,7 @@ import type { MyAssignments } from "@/types/myAssignments.types";
 
 export const requestedAssignments: MyAssignments.RequestedAssignment[] = [
   {
-    id: 101,
+    id: "101",
     title: "Print and bind CS301 project report",
     category: "Academic support",
 
@@ -30,7 +30,7 @@ export const requestedAssignments: MyAssignments.RequestedAssignment[] = [
   },
 
   {
-    id: 102,
+    id: "102",
     title: "Format PSY204 research references",
     category: "Academic support",
 

@@ -21,7 +21,7 @@ const navigation = [
   {
     label: 'My Gigs',
     icon: ClipboardList,
-    href: '/MyGigs',
+    href: '/MyAssignments',
   },
   {
     label: 'Applications',
