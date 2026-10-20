@@ -9,5 +9,6 @@ assignmentRouter.get('/get', gigController.getGigs);
 assignmentRouter.get('/:id/details', gigController.getGigDetails);
 assignmentRouter.get("/my/posted", gigController.getPostedAssignments);
 assignmentRouter.get("/my/requested", gigController.getRequestedAssignments);
+assignmentRouter.post('/create',gigController.createAssignment);
 
 export default assignmentRouter;

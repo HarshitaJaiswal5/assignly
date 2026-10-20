@@ -1,3 +1,5 @@
+import { DateTime } from "next-auth/providers/kakao";
+
 export namespace MyAssignments {
   // -----------------------------
   // Common
@@ -32,9 +34,9 @@ export namespace MyAssignments {
     category: string;
     description: string;
 
-    payment: Payment;
+    payment: number;
 
-    due: Due;
+    due: string;
 
     location: string;
 
