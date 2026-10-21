@@ -7,5 +7,6 @@ const assignmentRouter = Router();
 assignmentRouter.use('/', requireAuth);
 assignmentRouter.get('/get', gigController.getGigs);
 assignmentRouter.get('/:id/details', gigController.getGigDetails);
+assignmentRouter.post('/create',gigController.createAssignment);
 
 export default assignmentRouter;

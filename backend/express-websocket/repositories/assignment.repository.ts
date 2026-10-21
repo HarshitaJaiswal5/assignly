@@ -1,5 +1,5 @@
 import { Prisma, prisma } from '@repo/prisma/db';
-import type { GigFilterParams } from '@repo/zod-validation/types';
+import type { CreateAssignmentParams, GigFilterParams } from '@repo/zod-validation/types';
 
 const EARTH_RADIUS_KM = 6371;
 
@@ -204,4 +204,38 @@ export const assignmentRepository = {
       },
     });
   },
-};
+
+   createAssignment: async (
+    assignmentData: CreateAssignmentParams,
+    userId: string,
+  ) => {
+    return prisma.assignment.create({
+      data: {
+        title: assignmentData.title,
+        description: assignmentData.description,
+        instructions: assignmentData.instructions ?? null,
+        subject: assignmentData.subject,
+        amount: assignmentData.amount,
+        deliveryDate: assignmentData.deliveryDate,
+        deliveryAddress: assignmentData.deliveryAddress,
+        deliveryLatitude: assignmentData.deliveryLatitude,
+        deliveryLongitude: assignmentData.deliveryLongitude,
+        descriptionPDF: assignmentData.descriptionPDF ?? null,
+        referencePDF: assignmentData.referencePDF ?? null,
+        additionalStationary:
+          assignmentData.additionalStationary ?? false,
+        additionalStationaryAmount:
+          assignmentData.additionalStationaryAmount ?? 0,
+        userId,
+      },
+      include: {
+        user: {
+          select: {
+            name: true,
+            emailVerified: true,
+          },
+        },
+      },
+    });
+},
+}

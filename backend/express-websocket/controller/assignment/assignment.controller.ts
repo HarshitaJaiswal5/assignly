@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { gigFilterSchema, gigDetailsSchema } from '@repo/zod-validation/types';
+import { gigFilterSchema, gigDetailsSchema, createAssignmentSchema } from '@repo/zod-validation/types';
 import { ApiResponse } from '@utils/ApiResponse.js';
 import { asyncController } from '@utils/asyncController.js';
 import { gigServices } from '@services/assignment.services.js';
@@ -19,5 +19,22 @@ export const gigController = {
       gig,
       'Gig fetched successfully'
     );
-  })
+  }),
+  
+  createAssignment: asyncController(
+    async (req: Request, res: Response) => {
+      const assignmentData = createAssignmentSchema.parse(req.body);
+
+      const assignment = await gigServices.createAssignment(
+        assignmentData,
+        req.user.id,
+      );
+
+      return ApiResponse.success(
+        res,
+        assignment,
+        'Assignment created successfully',
+      );
+    },
+  ),
 };
