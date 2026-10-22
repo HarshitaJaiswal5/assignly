@@ -1,4 +1,4 @@
-import type { CreateAssignmentParams, GigFilterParams, cr } from '@repo/zod-validation/types';
+import type { CreateAssignmentParams, GigFilterParams } from '@repo/zod-validation/types';
 import { assignmentRepository } from '@repositories/assignment.repository.js';
 
 export const gigServices = {

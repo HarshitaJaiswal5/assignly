@@ -12,8 +12,8 @@ export const createAssignmentSchema = z.object({
   deliveryAddress: z.string().trim().min(3),
   deliveryLatitude: z.number().min(-90).max(90),
   deliveryLongitude: z.number().min(-180).max(180),
+  additionalStationary: z.array(z.string()).optional(),
   additionalStationaryAmount: z.coerce.number().nonnegative().optional(),
-  additionalStationary: z.boolean().optional(),
 });
 
 export type CreateAssignmentParams = z.infer<typeof createAssignmentSchema>;
