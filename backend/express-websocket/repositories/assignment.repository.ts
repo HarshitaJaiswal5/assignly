@@ -237,10 +237,10 @@ export const assignmentRepository = {
         descriptionPDF: assignmentData.descriptionPDF ?? null,
         referencePDF: assignmentData.referencePDF ?? null,
         additionalStationary:
-          assignmentData.additionalStationary ?? false,
+          assignmentData.additionalStationary ?? [],
         additionalStationaryAmount:
           assignmentData.additionalStationaryAmount ?? 0,
-        userId,
+        postedBy: userId,
       },
       include: {
         user: {
