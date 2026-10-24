@@ -1,10 +1,6 @@
 import { Prisma, prisma } from '@repo/prisma/db';
-<<<<<<< HEAD
 import type { CreateAssignmentParams, GigFilterParams } from '@repo/zod-validation/types';
 import { ApplicationRecord, AssignmentRecord } from '../shared-types/assignment.js';
-=======
-import type { CreateAssignmentParams, GigFilterParams } from '@repo/zod-validation/types';
->>>>>>> 3049dab (feat(backend/express-websocket): add types, routes and controller services for the upload assignment pipeline)
 
 const EARTH_RADIUS_KM = 6371;
 
@@ -187,7 +183,6 @@ export const assignmentRepository = {
       },
     });
   },
-
   getAssignmentsByUserId: async (
     userId: string
   ): Promise<AssignmentRecord[]> => {

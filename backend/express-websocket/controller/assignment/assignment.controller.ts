@@ -20,6 +20,7 @@ export const gigController = {
       'Gig fetched successfully'
     );
   }),
+<<<<<<< HEAD
 
     getPostedAssignments: asyncController(
     async (req: Request, res: Response) => {
@@ -49,6 +50,9 @@ export const gigController = {
         'Requested assignments fetched successfully',
       )},
     ),
+=======
+  
+>>>>>>> origin/harshita/upload-assignment-pipeline
   createAssignment: asyncController(
     async (req: Request, res: Response) => {
       const assignmentData = createAssignmentSchema.parse(req.body);
