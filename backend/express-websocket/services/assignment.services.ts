@@ -1,4 +1,4 @@
-import type { GigFilterParams } from '@repo/zod-validation/types';
+import type { CreateAssignmentParams, GigFilterParams } from '@repo/zod-validation/types';
 import { assignmentRepository } from '@repositories/assignment.repository.js';
 import { PostedAssignment, RequestedAssignment } from '../shared-types/assignment.js';
 
@@ -9,7 +9,7 @@ export const gigServices = {
   getGigDetails: async (gigId: string) => {
     return assignmentRepository.getGigDetails(gigId);
   },
-   getPostedAssignments: async (
+  getPostedAssignments: async (
     userId: string,
   ): Promise<PostedAssignment[]> => {
     const assignments =
@@ -54,5 +54,19 @@ export const gigServices = {
         appliedAt: application.createdAt,
       }];
     });
+  },
+    
+  createAssignment: async (
+    assignmentData: CreateAssignmentParams,
+    userId: string,
+  ) => {
+    if (assignmentData.deliveryDate <= new Date()) {
+      throw new Error('Delivery date must be in the future');
+    }
+
+    return assignmentRepository.createAssignment(
+      assignmentData,
+      userId,
+    );
   },
 };

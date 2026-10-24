@@ -18,7 +18,7 @@ model Assignment {
     deliveryLongitude Decimal
 
     additionalStationaryAmount Int?
-    additionalStationary       String?
+    additionalStationary       String[] @default([])
 
     status AssignmentStatus @default(OPEN)
 
