@@ -2,6 +2,7 @@ import { apiClient } from '@/lib/api/ApiClient';
 import type { GigFilters } from '@/types/gigFilters.types';
 import type { Assignment } from '@/types/assignment.types';
 import { MyAssignments } from '@/types/myAssignments.types';
+import { CreateAssignmentPayload, CreatedAssignment } from '@/types/uploadAssignments.types';
 
 export class GigApiService {
 
@@ -53,6 +54,17 @@ export class GigApiService {
 
     return response.data;
   }
+
+   public createAssignment = async (
+  data: CreateAssignmentPayload,
+): Promise<CreateAssignmentResponse> => {
+  const response = await apiClient.post<CreatedAssignment>(
+    '/assignment/create',
+    data,
+  );
+
+  return response.data;
+};
 }
 
 export const gigApiService = new GigApiService();

@@ -1,16 +1,29 @@
-export interface UploadAssignmentFormData {
+export interface CreateAssignmentPayload {
   title: string;
-  category: string;
   description: string;
+  descriptionPDF?: string | null;
+  referencePDF?: string | null;
+  instructions?: string | null;
+  subject: string[];
   amount: number;
-  dueDate: string;
-  dueTime: string;
-  location: string;
-  instructions: string;
-  attachment?: File;
+  deliveryDate: string;
+  deliveryAddress: string;
+  deliveryLatitude: number;
+  deliveryLongitude: number;
+  additionalStationary?: string[];
+  additionalStationaryAmount?: number;
 }
 
-export interface UploadAssignmentFormProps {
-  onSubmit?: (data: UploadAssignmentFormData) => void;
-  isSubmitting?: boolean;
+export interface CreatedAssignment {
+  id: string;
+  title: string;
+  description: string;
+  status: string;
+  createdAt: string;
 }
+
+export interface CreateAssignmentResponse {
+    success: boolean;
+    message: string;
+    data: CreatedAssignment[];
+  }
