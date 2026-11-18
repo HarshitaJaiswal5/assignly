@@ -1,48 +1,56 @@
-'use client'
+'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
-import { Repeat2 } from 'lucide-react';
-import { useState } from 'react';
-import { AuthCard } from '@/components/AuthCard/AuthCard'
-import { Button } from '@repo/ui/button';
+import { Zap, Compass, Layers, Briefcase } from 'lucide-react';
+
+const links = [
+  { href: '#how-it-works', label: 'How it works', Icon: Compass },
+  { href: '#categories', label: 'Categories', Icon: Layers },
+  { href: '#gigs', label: 'Gigs', Icon: Briefcase },
+];
 
 export default function Navbar() {
-  const [showAuthCard, setShowAuthCard] = useState(false);
-
   return (
-    <header className='sticky top-0 z-50 bg-white px-10'>
-      <nav className='tracking-wider font-(family-name:--font-rethink-sans) flex h-16 max-w-7xl items-center justify-between px-6'>
-        <div className='flex gap-1.5 items-center justify-center'>
-          <Repeat2
-            strokeWidth={4}
-            size={25}
-            color='#F45124'
-            absoluteStrokeWidth
-          />
-          <Link href='/' className='text-2xl font-bold'>
-            CampusLoop
+    <header className='sticky top-0 z-50 px-4 pt-3'>
+      <nav
+        className='mx-auto flex h-14 max-w-6xl items-center justify-between rounded-2xl border border-black/5 bg-white/80 px-4 shadow-sm backdrop-blur-md'
+        aria-label='Main'
+      >
+        {/* Logo */}
+        <Link href='/' className='flex items-center gap-2.5'>
+          <span className='flex h-9 w-9 items-center justify-center rounded-xl border border-primary bg-white text-primary'>
+            <Zap size={18} fill='currentColor' strokeWidth={0} />
+          </span>
+          <span className='text-base font-bold text-primary'>assignly</span>
+        </Link>
+
+        {/* Center links (hidden on mobile) */}
+        <ul className='hidden items-center gap-8 md:flex'>
+          {links.map(({ href, label, Icon }) => (
+            <li key={label}>
+              <Link
+                href={href}
+                className='flex items-center gap-1.5 text-sm font-medium text-foreground/60 transition-colors hover:text-foreground'
+              >
+                {label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+
+        {/* Auth */}
+        <div className='flex items-center gap-4'>
+          <Link
+            href='/login'
+            className='text-sm font-medium text-foreground transition-colors hover:text-primary'
+          >
+            Log in
           </Link>
-        </div>
-
-        <div className='hidden items-center gap-8 md:flex text-md font-bold '>
-          <Link href='#how-it-works'>How it works</Link>
-
-          <Link href='#how-it-works'>About</Link>
-
-          <Button onClick={() => setShowAuthCard(true)} className='text-orange-500'>
-            Sign in
-          </Button>
-
-          {showAuthCard && ( 
-            <AuthCard onClose={() => {setShowAuthCard(false)}}/>
-          )}
-
           <Link
             href='/signup'
-            className='rounded-lg bg-[#F45124] px-5 py-2 text-white tracking-wider'
+            className='rounded-full bg-primary px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-dark'
           >
-            Create account
+            Sign up
           </Link>
         </div>
       </nav>
