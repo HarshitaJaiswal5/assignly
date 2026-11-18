@@ -69,17 +69,11 @@ export namespace MyAssignments {
     title: string;
     category: string;
     description: string;
-
-    payment: Payment;
-
-    due: Due;
-
+    amount: number;
+    dueDate: Date | string;
     location: string;
-
     status: Status;
-
     applicants: Applicant[];
-
     selectedApplicantId?: number;
   }
 

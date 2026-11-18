@@ -1,10 +1,11 @@
+
 'use client';
 
 import { useCallback, useState } from 'react';
 import { Plus, ClipboardList } from 'lucide-react';
 
 import type { MyAssignments } from '@/types/myAssignments.types';
-import type { UploadAssignmentFormData } from '@/types/uploadAssignments.types';
+import type { CreateAssignmentPayload } from '@/types/uploadAssignments.types';
 import type {
   GigApplicationReceivedPayload,
   GigApplicationRejectedPayload,
@@ -22,15 +23,16 @@ import {
 } from '@/hooks/assignment/useAssignment';
 
 import { useApplicationEvents } from '@/hooks/application/useApplicationEvents';
+import { useCreateAssignment } from '@/hooks/assignment/useCreateAssignment';
 
 export default function MyAssignmentsPage() {
   const [activeTab, setActiveTab] =
     useState<MyAssignments.AssignmentTab>('requested');
 
   const [showUploadForm, setShowUploadForm] = useState(false);
-  const [selectedAssignmentId, setSelectedAssignmentId] = useState<
-    string | null
-  >(null);
+
+  const [selectedAssignmentId, setSelectedAssignmentId] =
+    useState<string | null>(null);
 
   const {
     data: postedAssignments = [],
@@ -46,45 +48,71 @@ export default function MyAssignmentsPage() {
     refetch: refetchRequestedAssignments,
   } = useRequestedAssignments();
 
+  // Create assignment mutation
+  const {
+    mutateAsync: createAssignment,
+    isPending: isSubmitting,
+  } = useCreateAssignment();
+
+  // Find the currently selected posted assignment
   const selectedAssignment =
     postedAssignments.find(
       (assignment) => assignment.id === selectedAssignmentId
     ) ?? null;
 
+  // Handle new application received through WebSocket
   const handleApplicationReceived = useCallback(
     (payload: GigApplicationReceivedPayload) => {
       console.log('New application received:', payload);
+
       void refetchPostedAssignments();
     },
     [refetchPostedAssignments]
   );
 
+  // Handle application rejection through WebSocket
   const handleApplicationRejected = useCallback(
     (payload: GigApplicationRejectedPayload) => {
       console.log('Application rejected:', payload);
+
       void refetchRequestedAssignments();
     },
     [refetchRequestedAssignments]
   );
 
+  // Subscribe to application-related WebSocket events
   useApplicationEvents({
     onApplicationReceived: handleApplicationReceived,
     onApplicationRejected: handleApplicationRejected,
   });
 
-  const handleUpload = (data: UploadAssignmentFormData) => {
-    console.log('Assignment to upload:', data);
+  // Handle assignment creation
+  const handleUpload = async (data: CreateAssignmentPayload) => {
+    try {
+      const response = await createAssignment(data);
 
-    // Assignment creation will be connected separately.
-    setShowUploadForm(false);
+      console.log('Assignment created:', response.data);
+
+      setShowUploadForm(false);
+
+      // Refresh posted assignments after successful creation
+      await refetchPostedAssignments();
+
+      // Switch to posted assignments to show the newly created assignment
+      setActiveTab('posted');
+    } catch (error) {
+      console.error('Assignment creation failed:', error);
+    }
   };
 
+  // Open applicant review for a particular assignment
   const handleReviewApplicants = (
     assignment: MyAssignments.PostedAssignment
   ) => {
     setSelectedAssignmentId(assignment.id);
   };
 
+  // Handle applicant selection
   const handleAcceptApplicant = (applicant: MyAssignments.Applicant) => {
     console.log('Selected applicant:', applicant);
 
@@ -92,23 +120,23 @@ export default function MyAssignmentsPage() {
   };
 
   return (
-    <div className='min-h-full bg-[#fafafa] px-4 py-5 sm:px-6 lg:px-8'>
+    <div className="min-h-full bg-[#fafafa] px-4 py-5 sm:px-6 lg:px-8">
       {/* HEADER */}
-      <div className='mb-7 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
+      <div className="mb-7 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className='text-[25px] font-semibold tracking-[-0.5px] text-[#181818]'>
+          <h1 className="text-[25px] font-semibold tracking-[-0.5px] text-[#181818]">
             My Assignments
           </h1>
 
-          <p className='mt-1.5 text-[13px] text-[#777]'>
+          <p className="mt-1.5 text-[13px] text-[#777]">
             Manage assignments you requested and assignments you posted.
           </p>
         </div>
 
         <button
-          type='button'
+          type="button"
           onClick={() => setShowUploadForm(true)}
-          className='flex w-fit items-center gap-2 rounded-xl bg-[#cc5942] px-4 py-2.5 text-[12px] font-medium text-white transition hover:bg-[#b94d38]'
+          className="flex w-fit items-center gap-2 rounded-xl bg-[#cc5942] px-4 py-2.5 text-[12px] font-medium text-white transition hover:bg-[#b94d38]"
         >
           <Plus size={16} />
           Upload assignment
@@ -117,52 +145,61 @@ export default function MyAssignmentsPage() {
 
       {/* UPLOAD FORM */}
       {showUploadForm && (
-        <section className='mb-8 max-w-3xl'>
+        <section className="mb-8 max-w-3xl">
           <UploadAssignmentForm
             onSubmit={handleUpload}
             onCancel={() => setShowUploadForm(false)}
           />
+
+          {isSubmitting && (
+            <p className="mt-2 text-xs text-[#777]">
+              Creating assignment...
+            </p>
+          )}
         </section>
       )}
 
       {/* TABS */}
-      <div className='mb-5'>
-        <AssignmentTabs activeTab={activeTab} onTabChange={setActiveTab} />
+      <div className="mb-5">
+        <AssignmentTabs
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+        />
       </div>
 
       {/* REQUESTED ASSIGNMENTS */}
       {activeTab === 'requested' ? (
         <section>
-          <div className='mb-3 flex items-center gap-2'>
-            <ClipboardList size={17} className='text-[#777]' />
+          <div className="mb-3 flex items-center gap-2">
+            <ClipboardList size={17} className="text-[#777]" />
 
-            <h2 className='text-[16px] font-semibold text-[#202020]'>
+            <h2 className="text-[16px] font-semibold text-[#202020]">
               Assignments you requested
             </h2>
           </div>
 
           {isRequestedLoading ? (
-            <p className='py-8 text-sm text-[#777]'>
+            <p className="py-8 text-sm text-[#777]">
               Loading requested assignments...
             </p>
           ) : isRequestedError ? (
-            <div className='py-8 text-sm text-red-600'>
+            <div className="py-8 text-sm text-red-600">
               <p>Failed to load requested assignments.</p>
 
               <button
-                type='button'
+                type="button"
                 onClick={() => void refetchRequestedAssignments()}
-                className='mt-2 font-medium underline'
+                className="mt-2 font-medium underline"
               >
                 Try again
               </button>
             </div>
           ) : requestedAssignments.length === 0 ? (
-            <p className='py-8 text-sm text-[#777]'>
+            <p className="py-8 text-sm text-[#777]">
               You haven't requested any assignments yet.
             </p>
           ) : (
-            <div className='grid grid-cols-1 gap-3 lg:grid-cols-2'>
+            <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
               {requestedAssignments.map((assignment) => (
                 <RequestedAssignmentCard
                   key={assignment.id}
@@ -178,36 +215,36 @@ export default function MyAssignmentsPage() {
       ) : (
         /* POSTED ASSIGNMENTS */
         <section>
-          <div className='mb-3 flex items-center gap-2'>
-            <ClipboardList size={17} className='text-[#777]' />
+          <div className="mb-3 flex items-center gap-2">
+            <ClipboardList size={17} className="text-[#777]" />
 
-            <h2 className='text-[16px] font-semibold text-[#202020]'>
+            <h2 className="text-[16px] font-semibold text-[#202020]">
               Assignments you posted
             </h2>
           </div>
 
           {isPostedLoading ? (
-            <p className='py-8 text-sm text-[#777]'>
+            <p className="py-8 text-sm text-[#777]">
               Loading posted assignments...
             </p>
           ) : isPostedError ? (
-            <div className='py-8 text-sm text-red-600'>
+            <div className="py-8 text-sm text-red-600">
               <p>Failed to load posted assignments.</p>
 
               <button
-                type='button'
+                type="button"
                 onClick={() => void refetchPostedAssignments()}
-                className='mt-2 font-medium underline'
+                className="mt-2 font-medium underline"
               >
                 Try again
               </button>
             </div>
           ) : postedAssignments.length === 0 ? (
-            <p className='py-8 text-sm text-[#777]'>
+            <p className="py-8 text-sm text-[#777]">
               You haven't posted any assignments yet.
             </p>
           ) : (
-            <div className='grid grid-cols-1 gap-3 lg:grid-cols-2'>
+            <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
               {postedAssignments.map((assignment) => (
                 <PostedAssignmentCard
                   key={assignment.id}
@@ -225,15 +262,15 @@ export default function MyAssignmentsPage() {
 
       {/* APPLICANT REVIEW */}
       {selectedAssignment && (
-        <section className='mt-8 max-w-2xl'>
-          <div className='mb-4'>
-            <h2 className='text-[17px] font-semibold text-[#202020]'>
+        <section className="mt-8 max-w-2xl">
+          <div className="mb-4">
+            <h2 className="text-[17px] font-semibold text-[#202020]">
               Review applicants
             </h2>
 
-            <p className='mt-1 text-[12px] text-[#777]'>
+            <p className="mt-1 text-[12px] text-[#777]">
               Choose one person to complete{' '}
-              <span className='font-medium text-[#444]'>
+              <span className="font-medium text-[#444]">
                 {selectedAssignment.title}
               </span>
               .

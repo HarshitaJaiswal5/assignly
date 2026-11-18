@@ -2,10 +2,13 @@ import { apiClient } from '@/lib/api/ApiClient';
 import type { GigFilters } from '@/types/gigFilters.types';
 import type { Assignment } from '@/types/assignment.types';
 import { MyAssignments } from '@/types/myAssignments.types';
-import { CreateAssignmentPayload, CreatedAssignment } from '@/types/uploadAssignments.types';
+import {
+  CreateAssignmentPayload,
+  CreateAssignmentResponse,
+  CreatedAssignment,
+} from '@/types/uploadAssignments.types';
 
 export class GigApiService {
-
   public async getGigs(
     filters: GigFilters
   ): Promise<Assignment.TrackAssignment[]> {
@@ -30,41 +33,49 @@ export class GigApiService {
 
     return response.data;
   }
-  
+
   public async getGigDetails(
     gigId: string
   ): Promise<Assignment.AssignmentDetails> {
-    const response = await apiClient.get<Assignment.DetailsResponse>(`/assignment/${gigId}/details`);
-
-    return response.data;
-  }
-
-   public async getPostedAssignments(): Promise<MyAssignments.PostedAssignment[]> {
-    const response = await apiClient.get<MyAssignments.PostedAssignmentResponse>(
-      '/assignment/my/posted'
+    const response = await apiClient.get<Assignment.DetailsResponse>(
+      `/assignment/${gigId}/details`
     );
 
     return response.data;
   }
 
-  public async getRequestedAssignments(): Promise<MyAssignments.RequestedAssignment[]> {
-    const response = await apiClient.get<MyAssignments.RequestAssignmentResponse>(
-      '/assignment/my/requested'
-    );
+  public async getPostedAssignments(): Promise<
+    MyAssignments.PostedAssignment[]
+  > {
+    const response =
+      await apiClient.get<MyAssignments.PostedAssignmentResponse>(
+        '/assignment/my/posted'
+      );
 
     return response.data;
   }
 
-   public createAssignment = async (
-  data: CreateAssignmentPayload,
-): Promise<CreateAssignmentResponse> => {
-  const response = await apiClient.post<CreatedAssignment>(
-    '/assignment/create',
-    data,
-  );
+  public async getRequestedAssignments(): Promise<
+    MyAssignments.RequestedAssignment[]
+  > {
+    const response =
+      await apiClient.get<MyAssignments.RequestAssignmentResponse>(
+        '/assignment/my/requested'
+      );
 
-  return response.data;
-};
+    return response.data;
+  }
+
+  public createAssignment = async (
+    data: CreateAssignmentPayload
+  ): Promise<CreateAssignmentResponse> => {
+    const response = await apiClient.post<CreateAssignmentResponse>(
+      '/assignment/create',
+      data
+    );
+
+    return response;
+  };
 }
 
 export const gigApiService = new GigApiService();
