@@ -61,7 +61,7 @@ export function LoaderMain({ onComplete }: LoaderMainProps) {
         gsap.set(letters, { opacity: 1 });
         gsap.set(icons, { opacity: 0 });
         gsap.set('[data-progress-bar]', { scaleX: 1 });
-       
+
         gsap.delayedCall(0.6, () => onCompleteRef.current());
         return;
       }
@@ -159,9 +159,9 @@ export function LoaderMain({ onComplete }: LoaderMainProps) {
   return (
     <div
       ref={rootRef}
-      role="status"
-      aria-label="Loading Assignly"
-      className="fixed inset-0 z-[999] flex items-center justify-center overflow-hidden"
+      role='status'
+      aria-label='Loading Assignly'
+      className='fixed inset-0 z-[999] flex items-center justify-center overflow-hidden'
       style={{
         backgroundColor: COLORS.background,
         fontFamily: 'var(--font-rethink-sans), sans-serif',
@@ -170,7 +170,7 @@ export function LoaderMain({ onComplete }: LoaderMainProps) {
       {/* Soft background glow */}
       <div
         aria-hidden
-        className="absolute rounded-full"
+        className='absolute rounded-full'
         style={{
           width: 420,
           height: 420,
@@ -183,21 +183,21 @@ export function LoaderMain({ onComplete }: LoaderMainProps) {
       {/* Slots: icon and letter stacked, cross-faded by GSAP */}
       <div
         aria-hidden
-        className="relative z-10 flex flex-wrap items-center justify-center gap-3 px-5 sm:gap-5"
+        className='relative z-10 flex flex-wrap items-center justify-center gap-3 px-5 sm:gap-5'
       >
         {SLOTS.map(({ letter, Icon }, i) => (
           <div
             key={i}
             data-slot
-            className="relative flex h-12 w-10 items-center justify-center sm:h-16 sm:w-14"
+            className='relative flex h-12 w-10 items-center justify-center sm:h-16 sm:w-14'
             style={{ color: COLORS.primary }}
           >
-            <span data-icon className="absolute">
+            <span data-icon className='absolute'>
               <Icon size={40} strokeWidth={2} />
             </span>
             <span
               data-letter
-              className="absolute text-4xl font-bold leading-none tracking-tighter sm:text-6xl"
+              className='absolute text-4xl font-bold leading-none tracking-tighter sm:text-6xl'
             >
               {letter}
             </span>
@@ -208,24 +208,24 @@ export function LoaderMain({ onComplete }: LoaderMainProps) {
       {/* Brand mark */}
       <div
         data-brand
-        className="absolute bottom-12 flex flex-col items-center gap-2"
+        className='absolute bottom-12 flex flex-col items-center gap-2'
       >
         <span
-          className="text-xs font-semibold uppercase"
+          className='text-xs font-semibold uppercase'
           style={{ color: COLORS.primary, letterSpacing: '0.35em' }}
         >
           Assignly
         </span>
         <div
-          role="progressbar"
+          role='progressbar'
           aria-valuemin={0}
           aria-valuemax={100}
-          className="h-1 w-40 overflow-hidden rounded-full sm:w-56"
+          className='h-1.5 w-20 overflow-hidden rounded-full sm:w-28'
           style={{ backgroundColor: COLORS.accent }}
         >
           <div
             data-progress-bar
-            className="h-full w-full rounded-full"
+            className='h-full w-full rounded-full'
             style={{
               backgroundColor: COLORS.primary,
               transformOrigin: 'left center',
