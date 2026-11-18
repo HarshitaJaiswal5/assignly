@@ -187,7 +187,7 @@ export const assignmentRepository = {
     userId: string
   ): Promise<AssignmentRecord[]> => {
     return prisma.assignment.findMany({
-      where: { id : userId },
+      where: { postedBy : userId },
       orderBy: { createdAt: 'desc' },
     });
   },
@@ -214,7 +214,8 @@ export const assignmentRepository = {
       },
     });
   },
-   createAssignment: async (
+  
+  createAssignment: async (
     assignmentData: CreateAssignmentParams,
     userId: string,
   ) => {
