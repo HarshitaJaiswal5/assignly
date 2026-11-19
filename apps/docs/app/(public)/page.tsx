@@ -10,7 +10,7 @@ export default function PublicHomePage() {
   return (
     <>
       <HomePage />
-      {/* {loading && <LoaderMain onComplete={() => setLoading(false)} />} */}
+      {loading && <LoaderMain onComplete={() => setLoading(false)} />}
     </>
   );
 }
