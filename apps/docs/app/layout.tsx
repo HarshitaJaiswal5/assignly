@@ -1,15 +1,17 @@
 import React from 'react';
-import type { Metadata } from 'next';
-
+import type { Metadata, Viewport } from 'next';
 import {
   Geist,
   Geist_Mono,
   Rethink_Sans,
 } from 'next/font/google';
-
 import '@repo/ui/globals.css';
 import { Providers } from '../providers/SessionProvider';
 import QueryProvider from '../providers/QueryClientProvider';
+
+export const viewport: Viewport = {
+  colorScheme: 'only light',
+};
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
