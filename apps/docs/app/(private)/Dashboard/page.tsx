@@ -27,36 +27,9 @@ import {
 } from 'lucide-react';
 import { categoryIcons } from '@/utils/categoryIcon.map';
 import { useDashboardOverview } from '@/hooks/dashboard/useDashboardOverview';
-
-const forYou = [
-  {
-    title: 'SQL schema review',
-    price: '₹700',
-    distance: '0.6 km',
-    date: 'Jun 14',
-    icon: Database,
-    iconClass: 'text-purple-500',
-    bgClass: 'bg-purple-50',
-  },
-  {
-    title: 'Pandas data cleaning',
-    price: '₹450',
-    distance: '1.2 km',
-    date: 'Jun 16',
-    icon: Code,
-    iconClass: 'text-green-600',
-    bgClass: 'bg-green-50',
-  },
-  {
-    title: 'Landing page build',
-    price: '₹1,200',
-    distance: '0.9 km',
-    date: 'Jun 20',
-    icon: AppWindow,
-    iconClass: 'text-blue-500',
-    bgClass: 'bg-blue-50',
-  },
-];
+import { useGigs } from '@/hooks/assignment/useAssignment';
+import GigCard, { GigCardSkeleton } from '@/components/GigCard/GigCard';
+import PageLoader from '@/components/PageLoader/PageLoader';
 
 export default function Dashboard() {
   const { data: session } = useSession();
@@ -68,10 +41,27 @@ export default function Dashboard() {
     refetch,
   } = useDashboardOverview();
 
+  const filters = {
+    search: '',
+    subject: '',
+    radius: 0,
+    college: '',
+    address: '',
+    coordinates: null,
+    startDate: null,
+    endDate: null,
+  };
+
+  const {
+    data: gigs = [],
+    isLoading: gigsLoading,
+    isError: gigsError,
+  } = useGigs(filters);
+
   const firstName = session?.user?.name?.split(' ')[0] ?? 'there';
 
   if (isLoading) {
-    return <div className='animate-pulse p-8'>Loading dashboard...</div>;
+    return <PageLoader/>;
   }
 
   if (isError || !overview) {
@@ -474,68 +464,54 @@ export default function Dashboard() {
             </ul>
           </div>
         </div>
+        <section className='w-full px-5 py-10'>
+          <div className='mx-auto max-w-6xl'>
+            {/* Heading */}
+            <div className='mb-5 flex items-center justify-between'>
+              <h2 className='flex items-center gap-2.5 text-xl font-bold tracking-tight text-[#152330]'>
+                <WandSparkles size={21} className='text-[#F45124]' />
+                For you
+              </h2>
 
-        {/* ============ For you ============ */}
-        <section className='mt-8'>
-          <div className='flex items-center justify-between'>
-            <h2 className='flex items-center gap-2.5 text-base font-bold text-foreground'>
-              <WandSparkles size={18} className='text-primary' />
-              For you
-            </h2>
-            <Link
-              href='/Explore'
-              className='group flex items-center gap-1 text-sm font-semibold text-primary'
-            >
-              Explore
-              <ArrowRight
-                size={14}
-                className='transition-transform duration-200 group-hover:translate-x-1'
-              />
-            </Link>
-          </div>
+              <Link
+                href='/Explore'
+                className='group flex items-center gap-1.5 text-sm font-semibold text-[#F45124]'
+              >
+                Explore
+                <ArrowRight
+                  size={16}
+                  className='transition-transform group-hover:translate-x-1'
+                />
+              </Link>
+            </div>
 
-          <div className='mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
-            {forYou.map(
-              ({
-                title,
-                price,
-                distance,
-                date,
-                icon: Icon,
-                iconClass,
-                bgClass,
-              }) => (
-                <div
-                  key={title}
-                  className='rounded-3xl bg-white p-5 shadow-sm ring-1 ring-accent/60 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/10'
-                >
-                  <div className='flex items-start justify-between'>
-                    <span
-                      className={`flex h-11 w-11 items-center justify-center rounded-xl ${bgClass}`}
-                    >
-                      <Icon size={20} className={iconClass} />
-                    </span>
-                    <span className='rounded-full bg-primary px-3.5 py-1.5 text-xs font-bold text-white shadow-sm'>
-                      {price}
-                    </span>
-                  </div>
-
-                  <h3 className='mt-5 text-sm font-bold text-foreground'>
-                    {title}
-                  </h3>
-
-                  <div className='mt-2.5 flex items-center gap-4 text-xs text-foreground/50'>
-                    <span className='flex items-center gap-1.5'>
-                      <MapPin size={12} className='text-primary' />
-                      {distance}
-                    </span>
-                    <span className='flex items-center gap-1.5'>
-                      <CalendarDays size={12} className='text-primary' />
-                      {date}
-                    </span>
-                  </div>
-                </div>
-              )
+            {gigsLoading ? (
+              <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
+                {Array.from({ length: 3 }).map((_, index) => (
+                  <GigCardSkeleton key={index} />
+                ))}
+              </div>
+            ) : gigsError ? (
+              <div className='py-12 text-center'>
+                <p className='text-sm font-medium text-red-500'>
+                  Unable to load gigs. Please try again later.
+                </p>
+              </div>
+            ) : gigs.length === 0 ? (
+              <div className='py-12 text-center'>
+                <p className='text-sm font-medium text-gray-600'>
+                  No gigs available right now.
+                </p>
+                <p className='mt-1 text-xs text-gray-400'>
+                  Check back later for new opportunities.
+                </p>
+              </div>
+            ) : (
+              <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
+                {gigs.slice(0, 3).map((gig, index) => (
+                  <GigCard key={gig.id} gig={gig} index={index} />
+                ))}
+              </div>
             )}
           </div>
         </section>
