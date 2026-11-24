@@ -41,10 +41,9 @@ import dummy from '@/public/dummy.png';
 import earningCard from '@/public/earningsCard.png';
 import gigCard from '@/public/gigCard.png';
 import lightningBadge from '@/public/lightningBadge.png';
-
-/* ------------------------------------------------------------------ */
-/* Data                                                               */
-/* ------------------------------------------------------------------ */
+import { useGigs } from '@/hooks/assignment/useAssignment';
+import { GigCategory } from '@/types/dashboard.types';
+import GigCard, { GigCardSkeleton } from '../GigCard/GigCard';
 
 type Feature = {
   title: string;
@@ -251,13 +250,7 @@ const skills: Skill[] = [
     bgClass: 'bg-[#eaf2ff]',
   },
   {
-    label: 'Java',
-    icon: Coffee,
-    iconClass: 'text-[#d97706]',
-    bgClass: 'bg-[#fff6e0]',
-  },
-  {
-    label: 'Python',
+    label: 'Coding',
     icon: Terminal,
     iconClass: 'text-[#16a34a]',
     bgClass: 'bg-[#eaf8ef]',
@@ -280,57 +273,95 @@ const skills: Skill[] = [
     iconClass: 'text-[#F45124]',
     bgClass: 'bg-[#fff0ea]',
   },
+  {
+    label: 'Others',
+    icon: Coffee,
+    iconClass: 'text-[#d97706]',
+    bgClass: 'bg-[#fff6e0]',
+  },
 ];
 
-const gigs = [
-  {
-    title: 'Graph problems tutoring',
-    price: '₹500',
+const categoryConfig: Record<
+  GigCategory,
+  { icon: LucideIcon; iconColor: string; iconBg: string }
+> = {
+  [GigCategory.DSA]: {
     icon: Code2,
     iconColor: 'text-orange-500',
     iconBg: 'bg-orange-50',
-    distance: '0.4 km',
-    date: 'Jun 12',
-    applicants: 7,
-    name: 'Priya S.',
-    initials: 'PS',
-    avatarBg: 'bg-amber-100',
   },
-  {
-    title: 'Portfolio website build',
-    price: '₹1,200',
-    icon: CreditCard,
+  [GigCategory.WEB_DEV]: {
+    icon: Laptop,
     iconColor: 'text-blue-500',
     iconBg: 'bg-blue-50',
-    distance: '1.1 km',
-    date: 'Jun 20',
-    applicants: 12,
-    name: 'Arjun M.',
-    initials: 'AM',
-    avatarBg: 'bg-cyan-100',
   },
-  {
-    title: 'Club poster design',
-    price: '₹300',
+  [GigCategory.CODING]: {
+    icon: Terminal,
+    iconColor: 'text-green-500',
+    iconBg: 'bg-green-50',
+  },
+  [GigCategory.DATABASE]: {
+    icon: Database,
+    iconColor: 'text-purple-500',
+    iconBg: 'bg-purple-50',
+  },
+  [GigCategory.DESIGN]: {
     icon: Palette,
     iconColor: 'text-pink-500',
     iconBg: 'bg-pink-50',
-    distance: '0.8 km',
-    date: 'Jun 9',
-    applicants: 4,
-    name: 'Neha K.',
-    initials: 'NK',
-    avatarBg: 'bg-rose-100',
   },
-];
+  [GigCategory.WRITING]: {
+    icon: PenTool,
+    iconColor: 'text-orange-500',
+    iconBg: 'bg-orange-50',
+  },
+  [GigCategory.OTHERS]: {
+    icon: AppWindow,
+    iconColor: 'text-gray-500',
+    iconBg: 'bg-gray-50',
+  },
+};
 
+const formatGigDate = (date: string) => {
+  const parsedDate = new Date(date);
 
-/* ------------------------------------------------------------------ */
-/* Page                                                               */
-/* ------------------------------------------------------------------ */
+  if (Number.isNaN(parsedDate.getTime())) return 'Date unavailable';
+
+  return parsedDate.toLocaleDateString('en-IN', {
+    day: 'numeric',
+    month: 'short',
+  });
+};
+
+const getInitials = (name: string) =>
+  name
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part.charAt(0).toUpperCase())
+    .join('');
 
 export function HomePage() {
   const mainRef = useRef<HTMLElement>(null);
+  const filters = {
+    search: '',
+    subject: '',
+    radius: 0,
+    college: '',
+    address: '',
+    coordinates: null,
+    startDate: null,
+    endDate: null,
+  };
+
+  const {
+    data: gigs = [],
+    isLoading: gigsLoading,
+    isError: gigsError,
+  } = useGigs(filters);
+
+  console.log(gigs);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -847,82 +878,49 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ============================ FEATURES ============================ */}
+      {/* ============================ FRESH GIGS ============================ */}
       <section className='w-full border-t border-orange-100 bg-white px-5 py-14'>
         <div className='mx-auto max-w-6xl'>
+          {/* Heading */}
           <div className='mb-7 text-center'>
             <p className='mb-2 text-[10px] font-semibold tracking-wide text-[#F45124]'>
               LIVE NOW
             </p>
+
             <h2 className='text-2xl font-bold tracking-tight text-[#152330]'>
               Fresh gigs near you
             </h2>
           </div>
 
-          <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
-            {gigs.map((gig) => {
-              const Icon = gig.icon;
-
-              return (
-                <div
-                  key={gig.title}
-                  className='rounded-2xl border border-orange-100 bg-white p-4 transition-all duration-300 hover:-translate-y-1 hover:border-orange-200 hover:shadow-lg hover:shadow-orange-100/40'
-                >
-                  <div className='mb-3 flex items-center justify-between'>
-                    <div
-                      className={`flex h-9 w-9 items-center justify-center rounded-xl ${gig.iconBg}`}
-                    >
-                      <Icon size={19} className={gig.iconColor} />
-                    </div>
-
-                    <span className='rounded-full bg-[#F45124] px-3 py-1 text-[10px] font-semibold text-white'>
-                      ₹ {gig.price.replace('₹', '')}
-                    </span>
-                  </div>
-
-                  <h3 className='mb-3 text-sm font-semibold text-[#152330]'>
-                    {gig.title}
-                  </h3>
-
-                  <div className='mb-3 flex flex-wrap items-center gap-3 text-[10px] text-gray-500'>
-                    <span className='flex items-center gap-1'>
-                      <MapPin size={11} className='text-[#F45124]' />
-                      {gig.distance}
-                    </span>
-
-                    <span className='flex items-center gap-1'>
-                      <CalendarDays size={11} className='text-[#F45124]' />
-                      {gig.date}
-                    </span>
-
-                    <span className='flex items-center gap-1'>
-                      <Users size={11} className='text-[#F45124]' />
-                      {gig.applicants}
-                    </span>
-                  </div>
-
-                  <div className='flex items-center justify-between border-t border-orange-50 pt-3'>
-                    <div className='flex items-center gap-2'>
-                      <div
-                        className={`flex h-7 w-7 items-center justify-center rounded-full text-[9px] font-bold text-[#152330] ${gig.avatarBg}`}
-                      >
-                        {gig.initials}
-                      </div>
-
-                      <span className='text-[10px] font-medium text-[#152330]'>
-                        {gig.name}
-                      </span>
-                    </div>
-
-                    <ArrowRight
-                      size={15}
-                      className='text-[#F45124] transition-transform duration-200 group-hover:translate-x-1'
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          {/* Gigs */}
+          {gigsLoading ? (
+            <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
+              {Array.from({ length: 3 }).map((_, index) => (
+                <GigCardSkeleton key={index} />
+              ))}
+            </div>
+          ) : gigsError ? (
+            <div className='py-12 text-center'>
+              <p className='text-sm font-medium text-red-500'>
+                Unable to load gigs. Please try again later.
+              </p>
+            </div>
+          ) : gigs.length === 0 ? (
+            <div className='py-12 text-center'>
+              <p className='text-sm font-medium text-gray-600'>
+                No gigs available right now.
+              </p>
+              <p className='mt-1 text-xs text-gray-400'>
+                Check back later for new opportunities.
+              </p>
+            </div>
+          ) : (
+            <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
+              {gigs.slice(0, 3).map((gig, index) => (
+                <GigCard key={gig.id} gig={gig} index={index} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
     </main>
