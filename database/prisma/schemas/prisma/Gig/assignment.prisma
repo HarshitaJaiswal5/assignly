@@ -3,6 +3,7 @@ model Assignment {
 
     title          String
     description    String
+    category       skills  @default(CODING)
     descriptionPDF String?
     referencePDF   String?
     instructions   String?
@@ -34,8 +35,16 @@ model Assignment {
 enum AssignmentStatus {
     OPEN
     ASSIGNED
-    IN_PROGRESS
     SUBMITTED
     CANCELLED
-    COMPLETED
+}
+
+enum skills {
+    DSA
+    WEB_DEV
+    CODING
+    DATABASE
+    DESIGN
+    WRITING
+    OTHERS
 }
