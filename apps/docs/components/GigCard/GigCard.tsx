@@ -1,9 +1,10 @@
-import { CalendarDays, Users } from 'lucide-react';
+import { ArrowUpRight, CalendarDays, Users } from 'lucide-react';
 import { formatDeliveryDate } from '@/utils/formatDate';
 import { getInitials } from '@/utils/getInitials';
 import { avatarColors } from '@/constants/avatarColors';
 import { categoryConfig } from '@/constants/categoryConfig';
 import { GigCategory } from '@/types/dashboard.types';
+import Link from 'next/link';
 
 export type GigCardData = {
   id: string | number;
@@ -26,6 +27,8 @@ const colorFromId = (id: string | number) =>
   avatarColors.length;
 
 export function GigCard({ gig, index, className = '' }: GigCardProps) {
+  console.log(gig);
+  
   const normalizedCategory = String(gig.category)
     .toUpperCase()
     .replace(/[\s-]+/g, '_');
@@ -81,7 +84,7 @@ export function GigCard({ gig, index, className = '' }: GigCardProps) {
       </div>
 
       {/* Posted by */}
-      <div className='flex items-center gap-2 border-t border-orange-100 pt-3'>
+      <div className='flex items-center gap-2 border-t border-orange-100 pt-3 pr-3'>
         <span
           className={`flex size-7 items-center justify-center rounded-full text-[10px] font-bold text-[#152330] ${avatarBg}`}
         >
@@ -89,6 +92,16 @@ export function GigCard({ gig, index, className = '' }: GigCardProps) {
         </span>
 
         <span className='text-xs font-medium text-[#152330]'>{firstName}</span>
+
+        <Link
+          href={`/Assignment/${gig.id}`}
+          className='group ml-auto flex items-center text-[#F45124]'
+        >
+          <ArrowUpRight
+            size={18}
+            className='transition-transform group-hover:translate-x-1 group-hover:-translate-y-1'
+          />
+        </Link>
       </div>
     </div>
   );
